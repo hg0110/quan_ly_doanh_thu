@@ -1,0 +1,26 @@
+name: transaction_repository
+description: The Repo that handles transaction
+publish_to: 'none'
+version: 0.0.1
+
+environment:
+  sdk: '>=3.1.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  equatable: ^2.0.5
+  firebase_auth: ^5.1.0
+  cloud_firestore: ^5.0.1
+  # rxdart: ^0.27.7
+
+  shipping_order_repository:
+    path: ../shipping_order_repository
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
