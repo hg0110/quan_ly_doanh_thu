@@ -18,8 +18,6 @@ import 'package:transaction_repository/transaction_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
 import '../car/blocs/create_car_bloc/create_car_bloc.dart';
-import '../service/blocs/create_category_bloc/create_category_bloc.dart';
-import '../service/blocs/get_categories_bloc/get_categories_bloc.dart';
 import '../car/blocs/delete_car_bloc/delete_car_bloc.dart';
 import '../car/car_screen.dart';
 import '../components/drawer.dart';
@@ -28,12 +26,13 @@ import '../customer/blocs/get_customer_bloc/get_customer_bloc.dart';
 import '../driver/blocs/delete_driver_bloc/delete_driver_bloc.dart';
 import '../driver/blocs/get_driver_bloc/get_driver_bloc.dart';
 import '../driver/driver_screen.dart';
+import '../service/blocs/create_category_bloc/create_category_bloc.dart';
+import '../service/blocs/get_categories_bloc/get_categories_bloc.dart';
 import '../service/service_screen.dart';
 import '../shipping_order/blocs/get_shipping_order_bloc/get_shipping_order_bloc.dart';
 import '../signup/bloc/signup_bloc/signup_bloc.dart';
 import '../stats/stats.dart';
-import '../transaction/blocs/create_expense_bloc/create_expense_bloc.dart';
-import '../transaction/blocs/get_expenses_bloc/get_expenses_bloc.dart';
+import '../transaction/blocs/create_transaction_bloc/create_transaction_bloc.dart';
 import '../user/blocs/delete_user_bloc/delete_user_bloc.dart';
 import 'main_screen.dart';
 
@@ -117,13 +116,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ..add(GetCategories()),
             ),
             BlocProvider(
-              create: (context) => GetExpensesBloc(FirebaseTransactionRepo())
-                ..add(GetExpenses()),
-            ),
-            BlocProvider(
-              create: (context) => CreateExpenseBloc(FirebaseTransactionRepo()),
-            ),
-            BlocProvider(
               create: (context) => GetTransactionBloc(FirebaseTransactionRepo())
                 ..add(GetTransaction()),
             ),
@@ -168,7 +160,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   GetCarBloc(FirebaseShippingOrderRepo())..add(GetCar()),
             ),
             BlocProvider<CreateCarBloc>(
-                create: (context) => CreateCarBloc(FirebaseShippingOrderRepo())),
+                create: (context) =>
+                    CreateCarBloc(FirebaseShippingOrderRepo())),
             BlocProvider(
               create: (context) => DeleteCarBloc(
                   shippingOrderRepository: FirebaseShippingOrderRepo()),
@@ -201,6 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
   void goToCategoryPage() {
     Navigator.pop(context);
     Navigator.push(
@@ -209,12 +203,12 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (BuildContext context) => MultiBlocProvider(
           providers: [
             BlocProvider(
-              create: (context) =>
-                  GetCategoriesBloc(FirebaseTransactionRepo())..add(GetCategories()),
+              create: (context) => GetCategoriesBloc(FirebaseTransactionRepo())
+                ..add(GetCategories()),
             ),
             BlocProvider(
-              create: (context) =>
-                  DeleteCategoryBloc(transactionRepository: FirebaseTransactionRepo()),
+              create: (context) => DeleteCategoryBloc(
+                  transactionRepository: FirebaseTransactionRepo()),
             ),
           ],
           child: const ServiceScreen(),
@@ -230,128 +224,127 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GetTransactionBloc, GetTransactionState>(
-        builder: (context, state) {
-      if (state is GetTransactionSuccess) {
-        return Scaffold(
-            appBar: AppBar(
-              title: const Text(
-                'Doanh thu',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.green,
-              leading: Builder(
-                builder: (context) {
-                  return IconButton(
-                    icon: const Icon(Icons.menu),
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                  );
-                },
-              ),
-            ),
-            drawer: MyDrawer(
-              onShippingOrderTap: goToShippingOrderPage,
-              onPersonnelTap: goToPersonnelPage,
-              onTransactionTap: goToTransactionPage,
-              onCustomerTap: goToCustomerPage,
-              onCarTap: goToCarPage,
-              onDriverTap: goToDriverPage,
-              onCategoryTap: goToCategoryPage,
-              // onSingOut: signOut,
-            ),
-            bottomNavigationBar: ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(30)),
-              child: BottomNavigationBar(
-                  onTap: (value) {
-                    setState(() {
-                      index = value;
-                    });
+    // return BlocBuilder<GetTransactionBloc, GetTransactionState>(
+    //     builder: (context, state) {
+    //   if (state is GetTransactionSuccess) {
+    return BlocListener<CreateTransactionBloc, CreateTransactionState>(
+      // BlocListener inside MultiBlocProvider
+      listener: (context, state) {
+        if (state is CreateTransactionSuccess) {
+          context.read<GetTransactionBloc>().add(GetTransaction());
+        }
+      },
+      child: BlocBuilder<GetTransactionBloc, GetTransactionState>(
+          builder: (context, state) {
+        if (state is GetTransactionSuccess) {
+          return Scaffold(
+              appBar: AppBar(
+                title: const Text(
+                  'Doanh thu',
+                  style: TextStyle(color: Colors.white),
+                ),
+                backgroundColor: Colors.green,
+                leading: Builder(
+                  builder: (context) {
+                    return IconButton(
+                      icon: const Icon(Icons.menu),
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                    );
                   },
-                  showSelectedLabels: false,
-                  showUnselectedLabels: false,
-                  elevation: 3,
-                  items: [
-                    BottomNavigationBarItem(
-                        icon: Icon(CupertinoIcons.home,
-                            color: index == 0 ? selectedItem : unselectedItem),
-                        label: 'Home'),
-                    BottomNavigationBarItem(
-                        icon: Icon(CupertinoIcons.graph_square_fill,
-                            color: index == 1 ? selectedItem : unselectedItem),
-                        label: 'Stats')
-                  ]),
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
-            floatingActionButton: FloatingActionButton(
-              onPressed: () async {
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute<void>(
-                //       builder: (BuildContext context) => const AddExpense(),
-                //     ));
-                Transactions? newTransaction = await Navigator.push(
-                  context,
-                  MaterialPageRoute<Transactions>(
-                    builder: (BuildContext context) => MultiBlocProvider(
-                      providers: [
-                        BlocProvider(
-                          create: (context) =>
-                              CreateCategoryBloc(FirebaseTransactionRepo()),
-                        ),
-                        BlocProvider(
-                          create: (context) =>
-                              GetCategoriesBloc(FirebaseTransactionRepo())
-                                ..add(GetCategories()),
-                        ),
-                        BlocProvider(
-                          create: (context) =>
-                              CreateExpenseBloc(FirebaseTransactionRepo()),
-                        ),
-                      ],
-                      child: const CommonScreen(),
-                    ),
-                  ),
-                );
-
-                if (newTransaction != null) {
-                  setState(() {
-                    state.transaction.insert(0, newTransaction);
-                  });
-                }
-              },
-              shape: const CircleBorder(),
-              child: Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [
-                        Theme.of(context).colorScheme.tertiary,
-                        Theme.of(context).colorScheme.secondary,
-                        Theme.of(context).colorScheme.primary,
-                      ],
-                      transform: const GradientRotation(pi / 4),
-                    )),
-                child: const Icon(CupertinoIcons.add),
+                ),
               ),
+              drawer: MyDrawer(
+                onShippingOrderTap: goToShippingOrderPage,
+                onPersonnelTap: goToPersonnelPage,
+                onTransactionTap: goToTransactionPage,
+                onCustomerTap: goToCustomerPage,
+                onCarTap: goToCarPage,
+                onDriverTap: goToDriverPage,
+                onCategoryTap: goToCategoryPage,
+                // onSingOut: signOut,
+              ),
+              bottomNavigationBar: ClipRRect(
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(30)),
+                child: BottomNavigationBar(
+                    onTap: (value) {
+                      setState(() {
+                        index = value;
+                      });
+                    },
+                    showSelectedLabels: false,
+                    showUnselectedLabels: false,
+                    elevation: 3,
+                    items: [
+                      BottomNavigationBarItem(
+                          icon: Icon(CupertinoIcons.home,
+                              color:
+                                  index == 0 ? selectedItem : unselectedItem),
+                          label: 'Home'),
+                      BottomNavigationBarItem(
+                          icon: Icon(CupertinoIcons.graph_square_fill,
+                              color:
+                                  index == 1 ? selectedItem : unselectedItem),
+                          label: 'Stats')
+                    ]),
+              ),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerDocked,
+              floatingActionButton: FloatingActionButton(
+                onPressed: () async {
+                  Transactions? newTransaction = await Navigator.push(
+                    context,
+                    MaterialPageRoute<Transactions>(
+                      builder: (BuildContext context) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider(
+                            create: (context) =>
+                                CreateCategoryBloc(FirebaseTransactionRepo()),
+                          ),
+                        ],
+                        child: const CommonScreen(),
+                      ),
+                    ),
+                  );
+
+                  if (newTransaction != null) {
+                    setState(() {
+                      state.transaction.insert(0, newTransaction);
+                    });
+                  }
+                },
+                shape: const CircleBorder(),
+                child: Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          Theme.of(context).colorScheme.tertiary,
+                          Theme.of(context).colorScheme.secondary,
+                          Theme.of(context).colorScheme.primary,
+                        ],
+                        transform: const GradientRotation(pi / 4),
+                      )),
+                  child: const Icon(CupertinoIcons.add),
+                ),
+              ),
+              body: index == 0
+                  ? MainScreen(state.transaction)
+                  : const StatScreen(
+                      title: 'Thống kê',
+                    ));
+        } else {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
             ),
-            body: index == 0
-                ? MainScreen(state.transaction)
-                : const StatScreen(
-                    title: 'Thống kê',
-                  ));
-      } else {
-        return const Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      }
-    });
+          );
+        }
+      }),
+    );
   }
 }

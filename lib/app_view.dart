@@ -14,6 +14,7 @@ import 'package:quan_ly_doanh_thu/pages/home/home_screen.dart';
 import 'package:quan_ly_doanh_thu/pages/service/blocs/create_category_bloc/create_category_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/service/blocs/get_categories_bloc/get_categories_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/shipping_order/blocs/create_shipping_order_bloc/create_shipping_order_bloc.dart';
+import 'package:quan_ly_doanh_thu/pages/transaction/blocs/create_transaction_bloc/create_transaction_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/transaction/blocs/get_transaction_bloc/get_Transaction_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/user/blocs/delete_user_bloc/delete_user_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/user/blocs/get_user_bloc/get_user_bloc.dart';
@@ -117,11 +118,8 @@ class MyAppView extends StatelessWidget {
                           GetTransactionBloc(FirebaseTransactionRepo())
                             ..add(GetTransaction()),
                     ),
-                    // BlocProvider(
-                    //   create: (context) => UpdateUserInfoBloc(
-                    //       userRepository: context.read<AuthenticationBloc>().userRepository
-                    //   ),
-                    // ),
+                    BlocProvider<CreateTransactionBloc>(
+                        create: (context) => CreateTransactionBloc(FirebaseTransactionRepo())),
                     BlocProvider(
                       create: (context) => MyUserBloc(
                           myUserRepository: context.read<AuthenticationBloc>().userRepository

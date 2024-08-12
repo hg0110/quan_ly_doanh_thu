@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/shipping_order/blocs/get_shipping_order_bloc/get_shipping_order_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/shipping_order/shipping_order_screen.dart';
-import 'package:quan_ly_doanh_thu/pages/transaction/blocs/create_expense_bloc/create_expense_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/transaction/blocs/create_transaction_bloc/create_transaction_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/transaction/transaction.dart';
 import 'package:shipping_order_repository/shipping_order_repository.dart';
@@ -124,10 +123,6 @@ class CommonScreen extends StatelessWidget {
                             create: (context) =>
                                 GetCategoriesBloc(FirebaseTransactionRepo())
                                   ..add(GetCategories()),
-                          ),
-                          BlocProvider(
-                            create: (context) =>
-                                CreateExpenseBloc(FirebaseTransactionRepo()),
                           ),
                           BlocProvider(
                             create: (context) => CreateTransactionBloc(

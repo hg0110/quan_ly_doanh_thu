@@ -6,7 +6,7 @@ class Transactions {
   String transactionId;
   ShippingOrder shippingOrder;
   Category category;
-  // Customer customer;
+  Car car;
   DateTime date;
   int amount;
   String bills;
@@ -16,7 +16,7 @@ class Transactions {
     required this.transactionId,
     required this.shippingOrder,
     required this.category,
-    // required this.customer,
+    required this.car,
     required this.date,
     required this.amount,
     required this.bills,
@@ -27,7 +27,7 @@ class Transactions {
     transactionId: '',
     shippingOrder: ShippingOrder.empty,
     category: Category.empty,
-    // customer: Customer.empty,
+    car: Car.empty,
     date: DateTime.now(),
     amount: 0,
     bills: '',
@@ -39,7 +39,7 @@ class Transactions {
       transactionId: transactionId,
       shippingOrder: shippingOrder,
       category: category,
-      // customer: customer,
+      car: car,
       date: date,
       amount: amount,
       bills: bills,
@@ -52,7 +52,7 @@ class Transactions {
       transactionId: entity.transactionId,
       shippingOrder: entity.shippingOrder,
       category: entity.category,
-      // customer: entity.customer,
+      car: entity.car,
       date: entity.date,
       amount: entity.amount,
       bills: entity.bills,

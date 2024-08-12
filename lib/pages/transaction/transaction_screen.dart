@@ -10,12 +10,10 @@ import 'package:transaction_repository/transaction_repository.dart';
 import '../service/blocs/create_category_bloc/create_category_bloc.dart';
 import '../service/blocs/get_categories_bloc/get_categories_bloc.dart';
 import '../shipping_order/blocs/get_shipping_order_bloc/get_shipping_order_bloc.dart';
-import 'blocs/create_expense_bloc/create_expense_bloc.dart';
 import 'blocs/create_transaction_bloc/create_transaction_bloc.dart';
 import 'blocs/get_transaction_bloc/get_Transaction_bloc.dart';
 
 class TransactionScreen extends StatefulWidget {
-  // final List<Transactions> transaction;
   const TransactionScreen({super.key});
 
   @override
@@ -23,6 +21,15 @@ class TransactionScreen extends StatefulWidget {
 }
 
 class _TransactionScreenState extends State<TransactionScreen> {
+  late Expense expense;
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    expense = Expense.empty;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -180,18 +187,20 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                       color: Theme.of(context)
                                                           .colorScheme
                                                           .onBackground,
-                                                      fontWeight: FontWeight.w400,
+                                                      fontWeight:
+                                                          FontWeight.w400,
                                                     ),
                                                   ),
                                                   Text(
-                                                    state.transaction[i].shippingOrder
-                                                        .name,
+                                                    state.transaction[i]
+                                                        .shippingOrder.name,
                                                     style: TextStyle(
                                                       fontSize: 14,
                                                       color: Theme.of(context)
                                                           .colorScheme
                                                           .onBackground,
-                                                      fontWeight: FontWeight.w500,
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                     ),
                                                   ),
                                                 ],
@@ -206,18 +215,23 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                       color: Theme.of(context)
                                                           .colorScheme
                                                           .onBackground,
-                                                      fontWeight: FontWeight.w400,
+                                                      fontWeight:
+                                                          FontWeight.w400,
                                                     ),
                                                   ),
                                                   Text(
-                                                    state.transaction[i].shippingOrder.customer
+                                                    state
+                                                        .transaction[i]
+                                                        .shippingOrder
+                                                        .customer
                                                         .name,
                                                     style: TextStyle(
                                                       fontSize: 14,
                                                       color: Theme.of(context)
                                                           .colorScheme
                                                           .onBackground,
-                                                      fontWeight: FontWeight.w500,
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                     ),
                                                   ),
                                                 ],
@@ -261,45 +275,57 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                         'Tên dịch vụ',
                                                         style: TextStyle(
                                                           fontSize: 14,
-                                                          color: Theme.of(context)
-                                                              .colorScheme
-                                                              .onBackground,
-                                                          fontWeight: FontWeight.w400,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .onBackground,
+                                                          fontWeight:
+                                                              FontWeight.w400,
                                                         ),
                                                       ),
                                                       Text(
-                                                        state
-                                                            .transaction[i].category.name,
+                                                        state.transaction[i]
+                                                            .category.name,
                                                         style: TextStyle(
                                                             fontSize: 14,
-                                                            color: Theme.of(context)
+                                                            color: Theme.of(
+                                                                    context)
                                                                 .colorScheme
                                                                 .onBackground,
-                                                            fontWeight: FontWeight.w500),
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
                                                       ),
                                                     ],
                                                   ),
-                                                  const SizedBox(width: 12,),
+                                                  const SizedBox(
+                                                    width: 12,
+                                                  ),
                                                   Column(
                                                     children: [
                                                       Text(
                                                         "Tên xe",
                                                         style: TextStyle(
                                                           fontSize: 14,
-                                                          color: Theme.of(context)
-                                                              .colorScheme
-                                                              .onBackground,
-                                                          fontWeight: FontWeight.w400,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .onBackground,
+                                                          fontWeight:
+                                                              FontWeight.w400,
                                                         ),
                                                       ),
                                                       Text(
-                                                        '19e123445',
+                                                        state.transaction[i].car
+                                                            .BKS,
                                                         style: TextStyle(
                                                           fontSize: 14,
-                                                          color: Theme.of(context)
-                                                              .colorScheme
-                                                              .onBackground,
-                                                          fontWeight: FontWeight.w500,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .onBackground,
+                                                          fontWeight:
+                                                              FontWeight.w500,
                                                         ),
                                                       ),
                                                     ],
@@ -330,18 +356,21 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                   formattedTotal,
                                                   style: TextStyle(
                                                       fontSize: 13,
-                                                      color: state.transaction[i]
-                                                                  .bills ==
-                                                              'thu'
-                                                          ? Colors.green
-                                                          : Colors.red,
-                                                      fontWeight: FontWeight.w400),
+                                                      color:
+                                                          state.transaction[i]
+                                                                      .bills ==
+                                                                  'thu'
+                                                              ? Colors.green
+                                                              : Colors.red,
+                                                      fontWeight:
+                                                          FontWeight.w400),
                                                 ),
                                               ],
                                             ),
                                             Text(
-                                              DateFormat('dd/MM/yy hh:mm').format(
-                                                  state.transaction[i].date),
+                                              DateFormat('dd/MM/yy hh:mm')
+                                                  .format(state
+                                                      .transaction[i].date),
                                               style: TextStyle(
                                                   fontSize: 14,
                                                   color: Theme.of(context)
@@ -383,21 +412,21 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   ),
                   BlocProvider(
                     create: (context) =>
-                    GetCategoriesBloc(FirebaseTransactionRepo())
-                      ..add(GetCategories()),
+                        GetCategoriesBloc(FirebaseTransactionRepo())
+                          ..add(GetCategories()),
                   ),
+                  // BlocProvider(
+                  //   create: (context) =>
+                  //       CreateExpenseBloc(FirebaseTransactionRepo()),
+                  // ),
                   BlocProvider(
                     create: (context) =>
-                        CreateExpenseBloc(FirebaseTransactionRepo()),
+                        CreateTransactionBloc(FirebaseTransactionRepo()),
                   ),
                   BlocProvider(
-                    create: (context) => CreateTransactionBloc(
-                        FirebaseTransactionRepo()),
-                  ),
-                  BlocProvider(
-                      create: (context) => GetShippingOrderBloc(
-                          FirebaseShippingOrderRepo())
-                        ..add(GetShippingOrder())),
+                      create: (context) =>
+                          GetShippingOrderBloc(FirebaseShippingOrderRepo())
+                            ..add(GetShippingOrder())),
                 ],
                 child: const Transaction(),
               ),

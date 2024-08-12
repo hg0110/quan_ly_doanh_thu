@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:quan_ly_doanh_thu/pages/shipping_order/add_shipping_order.dart';
 import 'package:quan_ly_doanh_thu/pages/shipping_order/blocs/get_shipping_order_bloc/get_shipping_order_bloc.dart';
-import 'package:quan_ly_doanh_thu/pages/shipping_order/shipping_order_screen.dart';
 import 'package:quan_ly_doanh_thu/pages/transaction/blocs/create_transaction_bloc/create_transaction_bloc.dart';
 import 'package:shipping_order_repository/shipping_order_repository.dart';
 import 'package:transaction_repository/transaction_repository.dart';
@@ -18,13 +16,6 @@ class AddIncome extends StatefulWidget {
   State<AddIncome> createState() => _AddIncomeState();
 }
 
-final List<String> genderItems = [
-  'THU',
-  'CHI',
-];
-
-// String? selectedValue;
-
 class _AddIncomeState extends State<AddIncome> {
   TextEditingController incomeController = TextEditingController();
   TextEditingController dateController = TextEditingController();
@@ -32,20 +23,11 @@ class _AddIncomeState extends State<AddIncome> {
   bool isLoading = false;
   ShippingOrder? selectedShippingOrder;
 
-  // Customer customer = Customer.empty;
-  // ShippingOrder shippingOrder = ShippingOrder.empty;
-
-  // late Income income;
   late Transactions transactions;
-
-  // Customer? selectedCustomerID;
 
   @override
   void initState() {
     dateController.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
-    // expense = Expense.empty;
-    // expense.expenseId = const Uuid().v1();
-    // income = Income.empty;
     selectedShippingOrder = null;
     transactions = Transactions.empty;
     super.initState();
@@ -141,173 +123,6 @@ class _AddIncomeState extends State<AddIncome> {
                         },
                       ),
                       const SizedBox(
-                        height: 32,
-                      ),
-                      // DropdownButton<String>(
-                      //   hint: selectedCustomerId == null
-                      //       ? const Text('Customer')
-                      //       : Text(
-                      //           selectedCustomerId!,
-                      //           style: const TextStyle(
-                      //               color: Colors.green, fontSize: 13),
-                      //         ),
-                      //   isExpanded: true,
-                      //   iconSize: 30.0,
-                      //   style: const TextStyle(color: Colors.blue),
-                      //   value: selectedCustomer?.customerId,
-                      //   // Store the selected  ID
-                      //   items: state.customer.map((customer) {
-                      //     return DropdownMenuItem<String>(
-                      //       value: customer.name,
-                      //       child: Text(customer.name),
-                      //     );
-                      //   }).toList(),
-                      //   onChanged: (String? newValue) {
-                      //     setState(() {
-                      //       selectedCustomer = state.customer.firstWhere(
-                      //           (customer) => customer.customerId == newValue);
-                      //       // selectedCustomerId = newValue!;
-                      //     });
-                      //   },
-                      // ),
-                      const SizedBox(
-                        height: 32,
-                      ),
-                      // DropdownButton<String>(
-                      //   isExpanded: true,
-                      //   // decoration: InputDecoration(
-                      //   //   // Add Horizontal padding using menuItemStyleData.padding so it matches
-                      //   //   // the menu padding when button's width is not specified.
-                      //   //   contentPadding: const EdgeInsets.symmetric(vertical: 16),
-                      //   //   border: OutlineInputBorder(
-                      //   //     borderRadius: BorderRadius.circular(15),
-                      //   //   ),
-                      //   //   // Add more decoration..
-                      //   // ),
-                      //   hint: const Text(
-                      //     'Chon giao dich',
-                      //     style: TextStyle(fontSize: 14),
-                      //   ),
-                      //   items: genderItems
-                      //       .map((item) => DropdownMenuItem<String>(
-                      //             value: item,
-                      //             child: Text(
-                      //               item,
-                      //               style: const TextStyle(
-                      //                 fontSize: 14,
-                      //               ),
-                      //             ),
-                      //           ))
-                      //       .toList(),
-                      //   // validator: (value) {
-                      //   //   if (value == null) {
-                      //   //     return 'Please select gender.';
-                      //   //   }
-                      //   //   return null;
-                      //   // },
-                      //   onChanged: (value) {
-                      //     //Do something when selected item is changed.
-                      //   },
-                      //   // onSaved: (value) {
-                      //   //   selectedValue = value.toString();
-                      //   // },
-                      //   // buttonStyleData: const ButtonStyleData(
-                      //   //   padding: EdgeInsets.only(right: 8),
-                      //   // ),
-                      //   // iconStyleData: const IconStyleData(
-                      //   //   icon: Icon(
-                      //   //     Icons.arrow_drop_down,
-                      //   //     color: Colors.black45,
-                      //   //   ),
-                      //   //   iconSize: 24,
-                      //   // ),
-                      //   // dropdownStyleData: DropdownStyleData(
-                      //   //   decoration: BoxDecoration(
-                      //   //     borderRadius: BorderRadius.circular(15),
-                      //   //   ),
-                      //   // ),
-                      //   // menuItemStyleData: const MenuItemStyleData(
-                      //   //   padding: EdgeInsets.symmetric(horizontal: 16),
-                      //   // ),
-                      // ),
-                      // TextFormField(
-                      //   controller: categoryController,
-                      //   textAlignVertical: TextAlignVertical.center,
-                      //   readOnly: true,
-                      //   onTap: () {},
-                      //   decoration: InputDecoration(
-                      //     filled: true,
-                      //     fillColor: expense.category == Category.empty
-                      //         ? Colors.white
-                      //         : Color(expense.category.color),
-                      //     prefixIcon: expense.category == Category.empty
-                      //         ? const Icon(
-                      //       FontAwesomeIcons.list,
-                      //       size: 16,
-                      //       color: Colors.grey,
-                      //     )
-                      //         : Image.asset(
-                      //       'assets/${expense.category.icon}.png',
-                      //       scale: 2,
-                      //     ),
-                      //     suffixIcon: IconButton(
-                      //         onPressed: () async {
-                      //           var newCategory =
-                      //           await getCategoryCreation(context);
-                      //           setState(() {
-                      //             state.categories.insert(0, newCategory);
-                      //           });
-                      //         },
-                      //         icon: const Icon(
-                      //           FontAwesomeIcons.plus,
-                      //           size: 16,
-                      //           color: Colors.grey,
-                      //         )),
-                      //     hintText: 'Category',
-                      //     border: const OutlineInputBorder(
-                      //         borderRadius: BorderRadius.vertical(
-                      //             top: Radius.circular(12)),
-                      //         borderSide: BorderSide.none),
-                      //   ),
-                      // ),
-                      // Container(
-                      //   height: 200,
-                      //   width: MediaQuery.of(context).size.width,
-                      //   decoration: const BoxDecoration(
-                      //     color: Colors.white,
-                      //     borderRadius:
-                      //         BorderRadius.vertical(bottom: Radius.circular(12)),
-                      //   ),
-                      //   child: Padding(
-                      //       padding: const EdgeInsets.all(8.0),
-                      //       child: ListView.builder(
-                      //           itemCount: state.customer.length,
-                      //           itemBuilder: (context, int i) {
-                      //             // return Card(
-                      //             //   child: ListTile(
-                      //             //     onTap: () {
-                      //             //       setState(() {
-                      //             //         expense.category =
-                      //             //         state.categories[i];
-                      //             //         categoryController.text =
-                      //             //             expense.category.name;
-                      //             //       });
-                      //             //     },
-                      //             //     leading: Image.asset(
-                      //             //       'assets/${state.categories[i].icon}.png',
-                      //             //       scale: 2,
-                      //             //     ),
-                      //             //     title: Text(state.categories[i].name),
-                      //             //     tileColor:
-                      //             //     Color(state.categories[i].color),
-                      //             //     shape: RoundedRectangleBorder(
-                      //             //         borderRadius:
-                      //             //         BorderRadius.circular(8)),
-                      //             //   ),
-                      //             // );
-                      //           })),
-                      // ),
-                      const SizedBox(
                         height: 16,
                       ),
                       TextFormField(
@@ -359,15 +174,15 @@ class _AddIncomeState extends State<AddIncome> {
                                     transactions.amount =
                                         int.parse(incomeController.text);
                                     transactions.shippingOrder =
-                                        selectedShippingOrder ?? ShippingOrder.empty;
+                                        selectedShippingOrder ??
+                                            ShippingOrder.empty;
                                     transactions.bills = 'thu';
                                   });
 
                                   context
                                       .read<CreateTransactionBloc>()
                                       .add(CreateTransaction(transactions));
-
-
+                                  Navigator.pop(context, transactions);
                                   Navigator.of(context).pop();
                                 },
                                 style: TextButton.styleFrom(

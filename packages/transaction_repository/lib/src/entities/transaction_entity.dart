@@ -8,7 +8,7 @@ class TransactionEntity {
   String transactionId;
   ShippingOrder shippingOrder;
   Category category;
-  // Customer customer;
+  Car car;
   DateTime date;
   int amount;
   String bills;
@@ -18,7 +18,7 @@ class TransactionEntity {
     required this.transactionId,
     required this.shippingOrder,
     required this.category,
-    // required this.customer,
+    required this.car,
     required this.date,
     required this.amount,
     required this.bills,
@@ -30,7 +30,7 @@ class TransactionEntity {
       'transactionId': transactionId,
       'shippingOrder': shippingOrder.toEntity().toDocument(),
       'category': category.toEntity().toDocument(),
-      // 'customer': customer.toEntity().toDocument(),
+      'car': car.toEntity().toDocument(),
       'date': date,
       'amount': amount,
       'bills': bills,
@@ -44,8 +44,8 @@ class TransactionEntity {
       shippingOrder: ShippingOrder.fromEntity(ShippingOrderEntity.fromDocument(doc['shippingOrder'])),
       category:
           Category.fromEntity(CategoryEntity.fromDocument(doc['category'])),
-      // customer:
-      //     Customer.fromEntity(CustomerEntity.fromDocument(doc['customer'])),
+      car:
+          Car.fromEntity(CarEntity.fromDocument(doc['car'])),
       date: (doc['date'] as Timestamp).toDate(),
       amount: doc['amount'],
       bills: doc['bills'],

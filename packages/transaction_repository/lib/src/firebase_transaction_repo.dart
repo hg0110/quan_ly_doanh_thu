@@ -14,22 +14,51 @@ class FirebaseTransactionRepo implements TransactionRepository {
   final incomeCollection = FirebaseFirestore.instance.collection('incomes');
   final customerCollection = FirebaseFirestore.instance.collection('customers');
 
-  Future<List<Transactions>> fetchTransactions(String period) async {
-    // 1. Fetch all transactions from your data source
-    final allTransactions = await getTransaction(); // Or however you fetch all transactions
 
-    // 2. Filter transactions basedon the period
+
+  Future<List<Transactions>> fetchFutureTransactions(String period) async{
+    // 1. Fetch all transactions from your data source
+    final allTransactions = await getTransaction();
+
+    // 2. Filter transactions based on the period
     final now = DateTime.now();
     switch (period) {
-      case 'day':
-        return allTransactions.where((t) => t.date.year == now.year && t.date.month == now.month && t.date.day == now.day).toList();
+      case 'week':
+        return _getFutureTransactionsByWeek(allTransactions, now);
       case 'month':
-        return allTransactions.where((t) => t.date.year == now.year && t.date.month == now.month).toList();
+        return _getFutureTransactionsByMonth(allTransactions, now);
       case 'year':
-        return allTransactions.where((t) => t.date.year == now.year).toList();
+        return _getFutureTransactionsByYear(allTransactions, now);
       default:
         return allTransactions;
     }
+  }
+
+  List<Transactions> _getFutureTransactionsByWeek(
+      List<Transactions> transactions, DateTime now) {
+    DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+    DateTime endOfWeek = startOfWeek.add(const Duration(days:6));
+    return transactions
+        .where((t) => t.date.isAfter(startOfWeek) && t.date.isBefore(endOfWeek))
+        .toList();
+  }
+
+  List<Transactions> _getFutureTransactionsByMonth(
+      List<Transactions> transactions, DateTime now) {
+    DateTime startOfMonth = DateTime(now.year, now.month);
+    DateTime endOfMonth = DateTime(now.year, now.month + 1).subtract(const Duration(days: 1));
+    return transactions
+        .where((t) => t.date.isAfter(startOfMonth) && t.date.isBefore(endOfMonth))
+        .toList();
+  }
+
+  List<Transactions> _getFutureTransactionsByYear(
+      List<Transactions> transactions, DateTime now) {
+    DateTime startOfYear = DateTime(now.year);
+    DateTime endOfYear = DateTime(now.year + 1).subtract(const Duration(days: 1));
+    return transactions
+        .where((t) => t.date.isAfter(startOfYear) && t.date.isBefore(endOfYear))
+        .toList();
   }
 
 

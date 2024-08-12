@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:quan_ly_doanh_thu/pages/stats/chart.dart';
-import 'package:quan_ly_doanh_thu/pages/stats/day_chart.dart';
 import 'package:transaction_repository/transaction_repository.dart';
 
 class StatScreen extends StatefulWidget {
   final String title;
-
-  // final Transactions transactions;
   const StatScreen({super.key, required this.title});
 
   @override
@@ -14,11 +11,7 @@ class StatScreen extends StatefulWidget {
 }
 
 class _StatScreenState extends State<StatScreen> {
-  // double totalRevenue = 0;
-  // double totalExpenses = 0;
-  List<double> revenueData = [];
-  List<double> expensesData = [];
-  String selectedPeriod = 'day'; // Default to 'day'
+  String selectedPeriod = 'week';
   final _transactionRepository = FirebaseTransactionRepo();
   List<Transactions> transactions = [];
 
@@ -28,23 +21,11 @@ class _StatScreenState extends State<StatScreen> {
     _fetchData();
   }
 
-  Future<void> _fetchData() async {
-    // 1. Fetch data from your data source based on selectedPeriod
-    final transactions =
-        await _transactionRepository.fetchTransactions(selectedPeriod);
-
-    // 2. Calculate totals
-    setState(() {
-      // transactions = fetchedTransactions; // Update transactions here
-      revenueData = transactions
-          .where((t) => t.bills == 'thu')
-          .map((t) => t.amount.toDouble())
-          .toList();
-      expensesData = transactions
-          .where((t) => t.bills == 'chi')
-          .map((t) => t.amount.toDouble())
-          .toList();
-    });
+  Future<void> _fetchData() async{
+    if (mounted) { // Check if the widget isstill mounted
+      transactions = await _transactionRepository.fetchFutureTransactions(selectedPeriod);
+      setState(() {});
+    }
   }
 
   @override
@@ -55,27 +36,24 @@ class _StatScreenState extends State<StatScreen> {
       ),
       body: Column(
         children: [
-          // 1. Add period selection (DropdownButton, RadioButtons, etc.)
           DropdownButton<String>(
             value: selectedPeriod,
             items: const [
-              DropdownMenuItem(value: 'day', child: Text('Day')),
-              DropdownMenuItem(value: 'month', child: Text('Month')),
-              DropdownMenuItem(value: 'year', child: Text('Year')),
+              DropdownMenuItem(value: 'week', child: Text('Tuần')),
+              DropdownMenuItem(value: 'month', child: Text('Tháng')),
+              DropdownMenuItem(value: 'year', child: Text('Năm')),
             ],
             onChanged: (value) {
               setState(() {
                 selectedPeriod = value!;
-                _fetchData(); // Re-fetch data when period changes
+                _fetchData();
               });
             },
           ),
-
-          // 2. Display the chart
           Expanded(
-            child: MyChart(
-              revenueData: revenueData,
-              expensesData: expensesData,
+            child: transactions.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : MyChart(
               period: selectedPeriod,
               transactions: transactions,
             ),
@@ -83,36 +61,5 @@ class _StatScreenState extends State<StatScreen> {
         ],
       ),
     );
-
-    // return SafeArea(
-    //   child: Padding(
-    //     padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
-    //     child: Column(
-    //       crossAxisAlignment: CrossAxisAlignment.start,
-    //       children: [
-    //         const Text(
-    //           'Thống kê doanh thu',
-    //           style: TextStyle(
-    //               fontSize: 20,
-    //               fontWeight: FontWeight.bold
-    //           ),
-    //         ),
-    //         const SizedBox(height: 20),
-    //         Container(
-    //             width: MediaQuery.of(context).size.width,
-    //             height: MediaQuery.of(context).size.width,
-    //             decoration: BoxDecoration(
-    //                 color: Colors.white,
-    //                 borderRadius: BorderRadius.circular(12)
-    //             ),
-    //             child: const Padding(
-    //               padding: EdgeInsets.fromLTRB(12, 20, 12, 12),
-    //               child: MyChart(),
-    //             )
-    //         )
-    //       ],
-    //     ),
-    //   ),
-    // );
   }
 }
