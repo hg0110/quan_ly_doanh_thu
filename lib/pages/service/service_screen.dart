@@ -92,8 +92,15 @@ class _ServiceScreenState extends State<ServiceScreen> {
                       final Category category = state.categories[index];
                       return Dismissible(
                         key: Key(category.categoryId),
+                        confirmDismiss: (direction) async {
+                          // Use confirmDismiss
+                          return await _showDeleteConfirmationDialog(
+                              context, category);
+                        },
                         onDismissed: (direction) {
-                          _showDeleteConfirmationDialog(context, category);
+                          context
+                              .read<DeleteCategoryBloc>()
+                              .add(DeleteCategory(category.categoryId));
                         },
                         background: Container(
                           color: Colors.red,
@@ -187,9 +194,10 @@ class _ServiceScreenState extends State<ServiceScreen> {
         ));
   }
 
-  Future<void> _showDeleteConfirmationDialog(
+  Future<bool> _showDeleteConfirmationDialog(
       BuildContext parentContext, Category category) async {
-    return showDialog<void>(
+    bool confirmDelete = false;
+    await showDialog<void>(
       context: parentContext,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
@@ -220,5 +228,6 @@ class _ServiceScreenState extends State<ServiceScreen> {
         );
       },
     );
+    return confirmDelete;
   }
 }

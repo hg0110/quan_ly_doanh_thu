@@ -211,7 +211,7 @@ class _LoginscreenState extends State<Loginscreen> {
                                 style: TextButton.styleFrom(
                                     elevation: 3.0,
                                     backgroundColor:
-                                        Theme.of(context).colorScheme.secondary,
+                                        Colors.green,
                                     foregroundColor: Colors.white,
                                     shape: RoundedRectangleBorder(
                                         borderRadius:

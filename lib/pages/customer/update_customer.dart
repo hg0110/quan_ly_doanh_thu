@@ -62,32 +62,30 @@ Future<void> UpdateCustomerScreen(
                     const SnackBar(
                         content: Text('Vui lòng điền đầy đủ thông tin!')),
                   );
-                } else {
-                  final transactionRepo = FirebaseTransactionRepo();
-
-                  // Check if a customer with the same name exists
-                  final existingCustomer =
-                      await transactionRepo.getCustomerByName(newCustomerName);
-
-                  if (existingCustomer != null) {
-                    // Show an error message (e.g., using a SnackBar or Dialog)
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Đã có khách hàng có tên này!')),
-                    );
-                  } else {
-                    // Update the driver object
-                    customer.name = newCustomerName;
-                    customer.address = newCustomerAddress;
-                    customer.phone = newCustomerPhone;
-                    customer.note = textNoteController.text;
-                    customer.date = DateTime.now();
-
-                    // Update driver in Firebase
-                    await transactionRepo.updateCustomer(customer);
-                    Navigator.of(context).pop(); // Close the dialog
-                  }
                 }
+                final transactionRepo = FirebaseTransactionRepo();
+
+                // Check if a customer with the same name exists
+                final existingCustomer =
+                    await transactionRepo.getCustomerByName(newCustomerName);
+
+                if (existingCustomer != null) {
+                  // Show an error message (e.g., using a SnackBar or Dialog)
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Đã có khách hàng có tên này!')),
+                  );
+                }
+                // Update the driver object
+                customer.name = newCustomerName;
+                customer.address = newCustomerAddress;
+                customer.phone = newCustomerPhone;
+                customer.note = textNoteController.text;
+                customer.date = DateTime.now();
+
+                // Update driver in Firebase
+                await transactionRepo.updateCustomer(customer);
+                Navigator.of(context).pop(); // Close the dialog
               }),
         ],
       );

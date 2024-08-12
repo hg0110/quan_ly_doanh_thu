@@ -8,6 +8,7 @@ import '../../shipping_order_repository.dart';
 class ShippingOrderEntity {
   String ShippingId;
   String name;
+  String note;
   DateTime start_day;
   Car car;
   Driver driver;
@@ -17,6 +18,7 @@ class ShippingOrderEntity {
   ShippingOrderEntity({
     required this.ShippingId,
     required this.name,
+    required this.note,
     required this.start_day,
     required this.car,
     required this.driver,
@@ -28,6 +30,7 @@ class ShippingOrderEntity {
     return {
       'ShippingId': ShippingId,
       'name': name,
+      'note': note,
       'start_day': start_day,
       'car': car.toEntity().toDocument(),
       'driver': driver.toEntity().toDocument(),
@@ -40,6 +43,7 @@ class ShippingOrderEntity {
     return ShippingOrderEntity(
       ShippingId: doc['ShippingId'],
       name: doc['name'],
+      note: doc['note'],
       start_day: (doc['start_day'] as Timestamp).toDate(),
       car: Car.fromEntity(CarEntity.fromDocument(doc['car'])),
       driver: Driver.fromEntity(DriverEntity.fromDocument(doc['driver'])),

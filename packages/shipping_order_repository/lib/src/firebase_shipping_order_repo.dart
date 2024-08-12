@@ -2,6 +2,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shipping_order_repository/src/entities/shipping_order_entity.dart';
 
 import '../shipping_order_repository.dart';
 
@@ -108,6 +109,24 @@ class FirebaseShippingOrderRepo implements ShippingOrderRepository {
 		} catch (e) {
 			log(e.toString());
 			rethrow;
+		}
+	}
+
+	@override
+	Future<ShippingOrder?> getShippingOrderByName(String name) async {
+		try {
+			final querySnapshot = await shippingOrderCollection
+					.where('name', isEqualTo: name)
+					.get();if (querySnapshot.docs.isNotEmpty) {
+				return ShippingOrder.fromEntity(
+						ShippingOrderEntity.fromDocument(querySnapshot.docs.first.data()));
+			} else {
+				return null;
+			}
+		} catch (e) {
+			// Handle potential errors (e.g., database connection errors)
+			print('Error getting shippingOrder by name: $e');
+			return null;
 		}
 	}
 

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quan_ly_doanh_thu/pages/user/signup/signup_screen.dart';
 import 'package:quan_ly_doanh_thu/pages/user/update_user.dart';
 import 'package:user_repository/user_repository.dart';
-
-import '../signup/bloc/signup_bloc/signup_bloc.dart';
-import '../signup/signup_screen.dart';
 import 'blocs/delete_user_bloc/delete_user_bloc.dart';
 import 'blocs/get_user_bloc/get_user_bloc.dart';
+import 'blocs/signup_bloc/signup_bloc.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
@@ -171,39 +170,6 @@ class _UserScreenState extends State<UserScreen> {
                   ),
                 ),
               );
-              // var newCustomer = await getAddCustomer(context);
-              // if (newCustomer != null) {
-              //   context.read<GetCustomerBloc>().add(GetCustomer());
-              // }
-              // Navigator.push(
-              //           context,
-              //           MaterialPageRoute<MyUser>(
-              //             builder: (BuildContext context) => MultiBlocProvider(
-              //               providers: [
-              //                 // BlocProvider<SignUpBloc>(
-              //                 //     create: (context) => SignUpBloc(FirebaseUserRepo())),
-              //                 // BlocProvider(
-              //                 //   create: (context) => SignUpBloc(FirebaseUserRepo())
-              //                 //     ..add(signUp()),
-              //                 // ),
-              //                 // BlocProvider(
-              //                 //   create: (context) => DeleteCustomerBloc(
-              //                 //       transactionRepository: FirebaseTransactionRepo()),
-              //                 // ),
-              //                 BlocProvider(
-              //                   create: (context) =>
-              //                   GetUserBloc(FirebaseUserRepo())..add(GetUser()),
-              //                 ),
-              //               ],
-              //               child: const Signupscreen(),
-              //             ),
-              //           ),
-              //         );
-              //   Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //           builder: (context) => const Signupscreen()));
-              // },
             },
             backgroundColor: Theme.of(context).colorScheme.secondary,
             child: const Icon(

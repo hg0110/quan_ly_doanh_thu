@@ -92,8 +92,15 @@ class _CarScreenState extends State<CarScreen> {
                       final Car car = state.car[index];
                       return Dismissible(
                         key: Key(car.carId),
+                        confirmDismiss: (direction) async {
+                          // Use confirmDismiss
+                          return await _showDeleteConfirmationDialog(
+                              context, car);
+                        },
                         onDismissed: (direction) {
-                          _showDeleteConfirmationDialog(context, car);
+                          context
+                              .read<DeleteCarBloc>()
+                              .add(DeleteCar(car.carId));
                         },
                         background: Container(
                           color: Colors.red,
@@ -182,9 +189,10 @@ class _CarScreenState extends State<CarScreen> {
         ));
   }
 
-  Future<void> _showDeleteConfirmationDialog(
+  Future<bool> _showDeleteConfirmationDialog(
       BuildContext parentContext, Car car) async {
-    return showDialog<void>(
+    bool confirmDelete = false;
+    await showDialog<void>(
       context: parentContext,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
@@ -193,7 +201,7 @@ class _CarScreenState extends State<CarScreen> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Are you sure you want to delete car ${car.name}?'),
+                Text('Bạn có chắc chắn muốn xoá xe ${car.name} không?'),
               ],
             ),
           ),
@@ -215,5 +223,6 @@ class _CarScreenState extends State<CarScreen> {
         );
       },
     );
+    return confirmDelete;
   }
 }

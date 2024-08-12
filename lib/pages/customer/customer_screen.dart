@@ -83,8 +83,15 @@ class _CustomerScreenState extends State<CustomerScreen> {
                     final customer = state.customer[index];
                     return Dismissible(
                       key: Key(customer.customerId),
+                      confirmDismiss: (direction) async {
+                        // Use confirmDismiss
+                        return await _showDeleteConfirmationDialog(
+                            context, customer);
+                      },
                       onDismissed: (direction) {
-                        _showDeleteConfirmationDialog(context, customer);
+                        context
+                            .read<DeleteCustomerBloc>()
+                            .add(DeleteCustomer(customer.customerId));
                       },
                       background: Container(
                         color: Colors.red,
@@ -181,9 +188,10 @@ class _CustomerScreenState extends State<CustomerScreen> {
         ));
   }
 
-  Future<void> _showDeleteConfirmationDialog(
+  Future<bool> _showDeleteConfirmationDialog(
       BuildContext parentContext, Customer customer) async {
-    return showDialog<void>(
+    bool confirmDelete = false;
+    await showDialog<void>(
       context: parentContext,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
@@ -217,5 +225,6 @@ class _CustomerScreenState extends State<CustomerScreen> {
         );
       },
     );
+    return confirmDelete;
   }
 }

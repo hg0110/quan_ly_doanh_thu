@@ -30,10 +30,10 @@ import '../service/blocs/create_category_bloc/create_category_bloc.dart';
 import '../service/blocs/get_categories_bloc/get_categories_bloc.dart';
 import '../service/service_screen.dart';
 import '../shipping_order/blocs/get_shipping_order_bloc/get_shipping_order_bloc.dart';
-import '../signup/bloc/signup_bloc/signup_bloc.dart';
 import '../stats/stats.dart';
 import '../transaction/blocs/create_transaction_bloc/create_transaction_bloc.dart';
 import '../user/blocs/delete_user_bloc/delete_user_bloc.dart';
+import '../user/blocs/signup_bloc/signup_bloc.dart';
 import 'main_screen.dart';
 
 class HomeScreen extends StatefulWidget {

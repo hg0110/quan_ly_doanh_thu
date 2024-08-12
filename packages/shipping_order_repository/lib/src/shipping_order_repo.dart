@@ -16,6 +16,8 @@ abstract class ShippingOrderRepository {
 
 	Future<List<ShippingOrder>> getShippingOrder();
 
+	Future<ShippingOrder?> getShippingOrderByName(String name);
+
 	Future<int> generateNextOrderId();
 
 

@@ -48,10 +48,8 @@ class _ShippingOrderScreenState extends State<ShippingOrderScreen> {
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.secondary,
-            title: const Text(
-              "LỆNH VẬN CHUYỂN",
-              style: TextStyle(color: Colors.white),
-            ),
+            title: const Text("LỆNH VẬN CHUYỂN",
+                style: TextStyle(color: Colors.white)),
           ),
           body: BlocBuilder<GetShippingOrderBloc, GetShippingOrderState>(
             builder: (context, state) {
@@ -97,6 +95,12 @@ class _ShippingOrderScreenState extends State<ShippingOrderScreen> {
                               children: [
                                 const Text("Xe: "),
                                 Text(shippingOrder.car.BKS),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const Text("Ghi chú: "),
+                                Text(shippingOrder.note),
                               ],
                             ),
                             Row(children: [
@@ -152,14 +156,14 @@ class _ShippingOrderScreenState extends State<ShippingOrderScreen> {
                             ),
                           ],
                           child: const AddShippingOrder(
-                            // onRefresh: () {
-                            //   // Refresh data on ShippingOrderScreen
-                            //   context
-                            //       .read<GetShippingOrderBloc>()
-                            //       .add(GetShippingOrder());
-                            // },
+                              // onRefresh: () {
+                              //   // Refresh data on ShippingOrderScreen
+                              //   context
+                              //       .read<GetShippingOrderBloc>()
+                              //       .add(GetShippingOrder());
+                              // },
                               // shippingOrderRepository: FirebaseShippingOrderRepo(),
-                          ),
+                              ),
                         )),
               );
               // var newShoppingOder = await  const AddShippingOrder();

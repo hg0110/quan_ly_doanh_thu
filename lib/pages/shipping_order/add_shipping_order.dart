@@ -56,7 +56,9 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
               if (state2 is GetCustomerSuccess) {
                 return Scaffold(
                     appBar: AppBar(
-                      title: const Text('Thêm lệnh vận chuyển'),
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                      title: const Text('Thêm lệnh vận chuyển',
+                          style: TextStyle(color: Colors.white)),
                     ),
                     body: Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -99,8 +101,6 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                                   child: Row(
                                     children: [
                                       Text(driver.name),
-                                      Text(driver.address),
-                                      Text(driver.phone),
                                     ],
                                   ),
                                 );
@@ -230,21 +230,42 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                             ),
                             ElevatedButton(
                               onPressed: () async {
-                                setState(() {
-                                  shippingOrder.ShippingId = const Uuid().v1();
-                                  shippingOrder.name = textLenhController.text;
-                                  shippingOrder.car = selectedCar ?? Car.empty;
-                                  shippingOrder.driver =
-                                      selectedDriver ?? Driver.empty;
-                                  shippingOrder.customer =
-                                      selectedCustomer ?? Customer.empty;
-                                  shippingOrder.user = user ?? MyUser.empty;
-                                });
-                                context
-                                    .read<CreateShippingOrderBloc>()
-                                    .add(CreateShippingOrder(shippingOrder));
-                                textLenhController.clear();
-                                Navigator.of(context).pop();
+                                final ShippingOrderRepo =
+                                    FirebaseShippingOrderRepo();
+                                ShippingOrder? existingOrder =
+                                    await ShippingOrderRepo
+                                        .getShippingOrderByName(
+                                            textLenhController.text);
+
+                                if (existingOrder != null) {
+                                  // 2. Show a dialog or snackbar indicating duplicate order
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'Lệnh vận chuyển đã tồn tại!')),
+                                  );
+                                } else {
+                                  setState(() {
+                                    shippingOrder.ShippingId =
+                                        const Uuid().v1();
+                                    shippingOrder.name =
+                                        textLenhController.text;
+                                    shippingOrder.note =
+                                        textNoteController.text;
+                                    shippingOrder.car =
+                                        selectedCar ?? Car.empty;
+                                    shippingOrder.driver =
+                                        selectedDriver ?? Driver.empty;
+                                    shippingOrder.customer =
+                                        selectedCustomer ?? Customer.empty;
+                                    shippingOrder.user = user ?? MyUser.empty;
+                                  });
+                                  context
+                                      .read<CreateShippingOrderBloc>()
+                                      .add(CreateShippingOrder(shippingOrder));
+                                  textLenhController.clear();
+                                  Navigator.of(context).pop();
+                                }
                               },
                               child: const Text('Lưu'),
                             ),

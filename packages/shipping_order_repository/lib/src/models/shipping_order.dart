@@ -8,6 +8,7 @@ import '../entities/shipping_order_entity.dart';
 class ShippingOrder {
   String ShippingId;
   String name;
+  String note;
   DateTime start_day;
   Car car;
   Driver driver;
@@ -17,6 +18,7 @@ class ShippingOrder {
   ShippingOrder({
     required this.ShippingId,
     required this.name,
+    required this.note,
     required this.start_day,
     required this.car,
     required this.driver,
@@ -27,6 +29,7 @@ class ShippingOrder {
   static final empty = ShippingOrder(
     ShippingId: '',
     name: '',
+    note: '',
     start_day: DateTime.now(),
     car: Car.empty,
     driver: Driver.empty,
@@ -38,6 +41,7 @@ class ShippingOrder {
     return ShippingOrderEntity(
       ShippingId: ShippingId,
       name: name,
+      note: note,
       start_day: start_day,
       car: car,
       driver: driver,
@@ -50,6 +54,7 @@ class ShippingOrder {
     return ShippingOrder(
       ShippingId: entity.ShippingId,
       name: entity.name,
+      note: entity.note,
       start_day: entity.start_day,
       car: entity.car,
       driver: entity.driver,

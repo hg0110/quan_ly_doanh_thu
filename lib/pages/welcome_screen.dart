@@ -33,35 +33,35 @@ class WelcomeScreen extends StatelessWidget {
                 height: 100,
               ),
               const Text(
-                'Welcome Back',
+                'Chào mừng trở lại!',
                 style: TextStyle(fontSize: 30, color: Colors.white),
               ),
               const SizedBox(
                 height: 30,
               ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const Loginscreen()));
-                },
-                child: Container(
-                  height: 53,
-                  width: 320,
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(30)),
-                  child: const Center(
-                    child: Text(
-                      'Sign In',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: kToolbarHeight,
+                  child: TextButton(
+                      onPressed: () {
+                        // Create Category Object and POP
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Loginscreen()));
+                      },
+                      style: TextButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                              BorderRadius.circular(40))),
+                      child: const Text(
+                        'Đăng nhập',
+                        style: TextStyle(
+                            fontSize: 22, color: Colors.white),
+                      )),
                 ),
               ),
               const SizedBox(
@@ -69,7 +69,7 @@ class WelcomeScreen extends StatelessWidget {
               ),
               const Spacer(),
               const Text(
-                'Login with Social Media',
+                'nmhg.dev',
                 style: TextStyle(fontSize: 17, color: Colors.white),
               ),
               const SizedBox(

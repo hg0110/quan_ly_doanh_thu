@@ -37,11 +37,18 @@ class _TransactionState extends State<Transaction> {
                   unselectedLabelColor: Colors.black,
 
                   tabs: const [
-                    Tab(
-                      text: " PHIẾU CHI ",
+                    SizedBox(
+                      // height: 100,
+                      width: 500,
+                      child: Tab(
+                        text: " PHIẾU CHI ",
+                      ),
                     ),
-                    Tab(
-                      text: " PHIẾU THU ",
+                    SizedBox(
+                      width: 500,
+                      child: Tab(
+                        text: " PHIẾU THU ",
+                      ),
                     ),
                   ],
                 ),

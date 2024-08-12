@@ -21,18 +21,6 @@ Future<void> UpdateUserScreen(BuildContext context, MyUser user) async {
                 controller: textNameController,
                 decoration: const InputDecoration(hintText: "Họ Tên"),
               ),
-              // TextField(
-              //   controller: textEmailController,
-              //   decoration: const InputDecoration(hintText: "email"),
-              // ),
-              // TextField(
-              //   controller: textPhoneController,
-              //   decoration: const InputDecoration(hintText: "quyền"),
-              // ),
-              // TextField(
-              //   controller: textNoteController,
-              //   decoration: const InputDecoration(hintText: "Ghi chú"),
-              // ),
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.all(20.0),
@@ -55,11 +43,7 @@ Future<void> UpdateUserScreen(BuildContext context, MyUser user) async {
                     },
                   ).toList(),
                   onChanged: (val) {
-                    // setState(
-                    //       () {
                     selectedRole = val;
-                    // },
-                    // );
                   },
                 ),
               ),
@@ -79,32 +63,15 @@ Future<void> UpdateUserScreen(BuildContext context, MyUser user) async {
               child: const Text("Lưu"),
               onPressed: () async {
                 final newUserName = textNameController.text;
-                final newUserEmail = textEmailController.text;
                 if (newUserName.isEmpty ||
-                    newUserEmail.isEmpty ||
                     selectedRole == null) {
                   // Show an error message (e.g., usinga SnackBar or Dialog)
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
+                   ScaffoldMessenger.of(context).showSnackBar(
+                     const SnackBar(
                         content: Text('Vui lòng điền đầy đủ thông tin!')),
                   );
                 } else {
-                  // final userRepo = FirebaseUserRepo();
-
-                  // Check if a customer with the same name exists
-                  // final existingUser =
-                  // await userRepo.getUserByEmail(newUserEmail);
-
-                  // if (existingUser != null) {
-                  //   // Show an error message (e.g., using a SnackBar or Dialog)
-                  //   ScaffoldMessenger.of(context).showSnackBar(
-                  //     const SnackBar(
-                  //         content: Text('Đã có khách hàng có tên này!')),
-                  //   );
-                  // } else {
-                  // Update the driver object
                   user.name = newUserName;
-                  // user.email = newUserEmail;
                   user.roles = selectedRole!;
                   user.date = DateTime.now();
 
@@ -113,7 +80,6 @@ Future<void> UpdateUserScreen(BuildContext context, MyUser user) async {
                   Navigator.of(context).pop(); // Close the dialog
                 }
               }
-              // }
               ),
         ],
       );
