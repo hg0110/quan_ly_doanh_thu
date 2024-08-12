@@ -34,21 +34,25 @@ class _MyChartState extends State<MyChart> {
             _barChartData(revenueByDayOfWeek),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildStatisticItem(
-                  'Tổng Thu', calculateTotal(widget.revenueData), Colors.green),
-              _buildStatisticItem(
-                  'Tổng Chi', calculateTotal(widget.expensesData), Colors.red),
-              _buildStatisticItem(
-                  'Lợi Nhuận',
-                  calculateTotal(widget.revenueData) -
-                      calculateTotal(widget.expensesData),
-                  Colors.blue),
-            ],
+        FittedBox(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildStatisticItem(
+                    'Tổng Thu', calculateTotal(widget.revenueData), Colors.green),
+                SizedBox(width: 12),
+                _buildStatisticItem(
+                    'Tổng Chi', calculateTotal(widget.expensesData), Colors.red),
+                SizedBox(width: 12),
+                _buildStatisticItem(
+                    'Lợi Nhuận',
+                    calculateTotal(widget.revenueData) -
+                        calculateTotal(widget.expensesData),
+                    Colors.blue),
+              ],
+            ),
           ),
         ),
       ],

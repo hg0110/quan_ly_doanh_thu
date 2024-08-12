@@ -3,7 +3,15 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:quan_ly_doanh_thu/pages/transaction/transaction.dart';
+import 'package:shipping_order_repository/shipping_order_repository.dart';
+import 'package:transaction_repository/transaction_repository.dart';
 
+import '../service/blocs/create_category_bloc/create_category_bloc.dart';
+import '../service/blocs/get_categories_bloc/get_categories_bloc.dart';
+import '../shipping_order/blocs/get_shipping_order_bloc/get_shipping_order_bloc.dart';
+import 'blocs/create_expense_bloc/create_expense_bloc.dart';
+import 'blocs/create_transaction_bloc/create_transaction_bloc.dart';
 import 'blocs/get_transaction_bloc/get_Transaction_bloc.dart';
 
 class TransactionScreen extends StatefulWidget {
@@ -150,178 +158,209 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                 formatter.format(transactions);
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 16.0),
-                              child: Card(
-                                shadowColor: Colors.red,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          if (state.transaction[i].bills ==
-                                              'thu') ...[
-                                            Text(
-                                              state.transaction[i].shippingOrder
-                                                  .name,
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .onBackground,
-                                                fontWeight: FontWeight.w500,
+                              child: FittedBox(
+                                child: Card(
+                                  shadowColor: Colors.red,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            if (state.transaction[i].bills ==
+                                                'thu') ...[
+                                              Column(
+                                                children: [
+                                                  Text(
+                                                    'Tên lệnh',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .onBackground,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    state.transaction[i].shippingOrder
+                                                        .name,
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .onBackground,
+                                                      fontWeight: FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ),
+                                              const SizedBox(width: 12),
+                                              Column(
+                                                children: [
+                                                  Text(
+                                                    'Tên khách hàng',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .onBackground,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    state.transaction[i].shippingOrder.customer
+                                                        .name,
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .onBackground,
+                                                      fontWeight: FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                            // Text(
+                                            //   state.transaction[i].shippingOrder.name,
+                                            //   style: TextStyle(
+                                            //       fontSize: 14,
+                                            //       color: Theme.of(context)
+                                            //           .colorScheme
+                                            //           .onBackground,
+                                            //       fontWeight: FontWeight.w500),
+                                            // ),
+                                            // Stack(
+                                            //   alignment: Alignment.center,
+                                            //   children: [
+                                            //     Container(
+                                            //       width: 50,
+                                            //       height: 50,
+                                            //       decoration: BoxDecoration(
+                                            //           color: Color(
+                                            //               state.transaction[i].category.color),
+                                            //           shape: BoxShape.circle),
+                                            //     ),
+                                            //     // Image.asset(
+                                            //     //   'assets/${state.transaction[i].category.icon}.png',
+                                            //     //   scale: 2,
+                                            //     //   color: Colors.white,
+                                            //     // )
+                                            //   ],
+                                            // ),
+                                            const SizedBox(width: 12),
+                                            if (state.transaction[i].bills ==
+                                                'chi') ...[
+                                              Row(
+                                                children: [
+                                                  Column(
+                                                    children: [
+                                                      Text(
+                                                        'Tên dịch vụ',
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .onBackground,
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        state
+                                                            .transaction[i].category.name,
+                                                        style: TextStyle(
+                                                            fontSize: 14,
+                                                            color: Theme.of(context)
+                                                                .colorScheme
+                                                                .onBackground,
+                                                            fontWeight: FontWeight.w500),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(width: 12,),
+                                                  Column(
+                                                    children: [
+                                                      Text(
+                                                        "Tên xe",
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .onBackground,
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        '19e123445',
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .onBackground,
+                                                          fontWeight: FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ],
-                                          // Text(
-                                          //   state.transaction[i].shippingOrder.name,
-                                          //   style: TextStyle(
-                                          //       fontSize: 14,
-                                          //       color: Theme.of(context)
-                                          //           .colorScheme
-                                          //           .onBackground,
-                                          //       fontWeight: FontWeight.w500),
-                                          // ),
-                                          // Stack(
-                                          //   alignment: Alignment.center,
-                                          //   children: [
-                                          //     Container(
-                                          //       width: 50,
-                                          //       height: 50,
-                                          //       decoration: BoxDecoration(
-                                          //           color: Color(
-                                          //               state.transaction[i].category.color),
-                                          //           shape: BoxShape.circle),
-                                          //     ),
-                                          //     // Image.asset(
-                                          //     //   'assets/${state.transaction[i].category.icon}.png',
-                                          //     //   scale: 2,
-                                          //     //   color: Colors.white,
-                                          //     // )
-                                          //   ],
-                                          // ),
-                                          const SizedBox(width: 12),
-                                          if (state.transaction[i].bills ==
-                                              'chi') ...[
+                                        ),
+                                        const SizedBox(width: 15),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Column(
+                                              children: [
+                                                // Text(
+                                                //   'Giá tiền',
+                                                //   style: TextStyle(
+                                                //     fontSize: 14,
+                                                //     color: Theme.of(context)
+                                                //         .colorScheme
+                                                //         .onBackground,
+                                                //     fontWeight: FontWeight.w400,
+                                                //   ),
+                                                // ),
+                                                Text(
+                                                  formattedTotal,
+                                                  style: TextStyle(
+                                                      fontSize: 13,
+                                                      color: state.transaction[i]
+                                                                  .bills ==
+                                                              'thu'
+                                                          ? Colors.green
+                                                          : Colors.red,
+                                                      fontWeight: FontWeight.w400),
+                                                ),
+                                              ],
+                                            ),
                                             Text(
-                                              state
-                                                  .transaction[i].category.name,
+                                              DateFormat('dd/MM/yy hh:mm').format(
+                                                  state.transaction[i].date),
                                               style: TextStyle(
                                                   fontSize: 14,
                                                   color: Theme.of(context)
                                                       .colorScheme
-                                                      .onBackground,
-                                                  fontWeight: FontWeight.w500),
+                                                      .outline,
+                                                  fontWeight: FontWeight.w400),
                                             ),
                                           ],
-                                        ],
-                                      ),
-                                      const SizedBox(width: 15),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            formattedTotal,
-                                            style: TextStyle(
-                                                fontSize: 13,
-                                                color: state.transaction[i]
-                                                            .bills ==
-                                                        'thu'
-                                                    ? Colors.green
-                                                    : Colors.red,
-                                                fontWeight: FontWeight.w400),
-                                          ),
-                                          Text(
-                                            DateFormat('dd/MM/yy hh:mm').format(
-                                                state.transaction[i].date),
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .outline,
-                                                fontWeight: FontWeight.w400),
-                                          ),
-                                        ],
-                                      )
-                                    ],
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
                             );
-                            //   } else {
-                            //     return const SizedBox
-                            //         .shrink(); // Or any other placeholder widget
-                            //   }
                           }),
                     ),
                   ],
                 );
-                //   ListView.builder(
-                //   scrollDirection: Axis.vertical,
-                //   itemCount: state.driver.length,
-                //   itemBuilder: (context, index) {
-                //     final Driver driver = state.driver[index];
-                //     return Dismissible(
-                //       key: Key(driver.driverId),
-                //       onDismissed: (direction) {
-                //         _showDeleteConfirmationDialog(context, driver);
-                //       },
-                //       background: Container(
-                //         color: Colors.red,
-                //         alignment: Alignment.centerRight,
-                //         padding: const EdgeInsets.only(right: 16.0),
-                //         child: const Icon(Icons.delete, color: Colors.white),
-                //       ),
-                //       child: Card(
-                //         surfaceTintColor: Colors.green,
-                //         shadowColor: Colors.green,
-                //         child: ListTile(
-                //           title: Row(
-                //             children: [
-                //               const Text("Họ tên: "),
-                //               Text(driver.name),
-                //             ],
-                //           ),
-                //           subtitle: Column(
-                //             crossAxisAlignment: CrossAxisAlignment.start,
-                //             children: [
-                //               // Row(
-                //               //   children: [
-                //               //     const Text("BKS: "),
-                //               //     Text(driver.BKS),
-                //               //   ],
-                //               // ),
-                //               Row(
-                //                 children: [
-                //                   const Text("Ghi chú: "),
-                //                   Text(driver.note),
-                //                 ],
-                //               ),
-                //             ],
-                //           ),
-                //           trailing: Column(
-                //             children: [
-                //               Expanded(
-                //                 child: SizedBox(
-                //                   width: 30,
-                //                   child: IconButton(
-                //                     icon: const Icon(Icons.edit),
-                //                     onPressed:  ()async{
-                //                       var updateDriver = await UpdateDriverScreen(context, driver);
-                //                       context.read<GetDriverBloc>().add(GetDriver());
-                //                     },
-                //                   ),
-                //                 ),
-                //               ),
-                //             ],
-                //           ),
-                //         ),
-                //       ),
-                //     );
-                //   },
-                // );
               } else {
                 return const Center(
                   child: Text("Lỗi hiển thị"),
@@ -331,119 +370,50 @@ class _TransactionScreenState extends State<TransactionScreen> {
           ),
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () async {
-      //     var newTransaction = await const Transaction();
-      //     if (newTransaction != null) {
-      //       context.read<GetTransactionBloc>().add(GetTransaction());
-      //     }
-      //   },
-      //   backgroundColor: Theme.of(context).colorScheme.secondary,
-      //   child: const Icon(
-      //     Icons.add,
-      //     color: Colors.white,
-      //   ),
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute<Transactions>(
+              builder: (BuildContext context) => MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (context) =>
+                        CreateCategoryBloc(FirebaseTransactionRepo()),
+                  ),
+                  BlocProvider(
+                    create: (context) =>
+                    GetCategoriesBloc(FirebaseTransactionRepo())
+                      ..add(GetCategories()),
+                  ),
+                  BlocProvider(
+                    create: (context) =>
+                        CreateExpenseBloc(FirebaseTransactionRepo()),
+                  ),
+                  BlocProvider(
+                    create: (context) => CreateTransactionBloc(
+                        FirebaseTransactionRepo()),
+                  ),
+                  BlocProvider(
+                      create: (context) => GetShippingOrderBloc(
+                          FirebaseShippingOrderRepo())
+                        ..add(GetShippingOrder())),
+                ],
+                child: const Transaction(),
+              ),
+            ),
+          );
+          // var newTransaction = await const Transaction();
+          // if (newTransaction != null) {
+          //   context.read<GetTransactionBloc>().add(GetTransaction());
+          // }
+        },
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
     );
-    // Expanded(
-    //   child: ListView.builder(
-    //       itemCount: expenses.length,
-    //       itemBuilder: (context, int i) {
-    //         final now = DateTime.now();
-    //         final today = DateTime(now.year, now.month, now.day);
-    //         final tomorrow = today.add(const Duration(
-    //             days:
-    //             1)); // Filter expenses to include only transactions of the day
-    //         final expensesOfDay = expenses
-    //             .where((expense) =>
-    //         expense.date.isAfter(today) &&
-    //             expense.date.isBefore(tomorrow))
-    //             .toList();
-    //
-    //         if (expensesOfDay.length > i) {
-    //           // Check if enough elements exist
-    //           final expense =
-    //           expensesOfDay[i]; // Access the filtered list
-    //           final formatter = NumberFormat("#,##0");
-    //           String formattedTotal = formatter.format(expense.amount);
-    //           // final expense = expenses[i].amount;
-    //           // final formatter = NumberFormat("#,##0");
-    //           // String formattedTotal =
-    //           //     formatter.format(expenses[i].amount);
-    //           return Padding(
-    //             padding: const EdgeInsets.only(bottom: 16.0),
-    //             child: Card(
-    //               shadowColor: Colors.red,
-    //               child: Padding(
-    //                 padding: const EdgeInsets.all(16.0),
-    //                 child: Row(
-    //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                   children: [
-    //                     Row(
-    //                       children: [
-    //                         Stack(
-    //                           alignment: Alignment.center,
-    //                           children: [
-    //                             Container(
-    //                               width: 50,
-    //                               height: 50,
-    //                               decoration: BoxDecoration(
-    //                                   color: Color(
-    //                                       expenses[i].category.color),
-    //                                   shape: BoxShape.circle),
-    //                             ),
-    //                             Image.asset(
-    //                               'assets/${expenses[i].category.icon}.png',
-    //                               scale: 2,
-    //                               color: Colors.white,
-    //                             )
-    //                           ],
-    //                         ),
-    //                         const SizedBox(width: 12),
-    //                         Text(
-    //                           expenses[i].category.name,
-    //                           style: TextStyle(
-    //                               fontSize: 14,
-    //                               color: Theme.of(context)
-    //                                   .colorScheme
-    //                                   .onBackground,
-    //                               fontWeight: FontWeight.w500),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                     const SizedBox(width: 15),
-    //                     Column(
-    //                       crossAxisAlignment: CrossAxisAlignment.end,
-    //                       children: [
-    //                         Text(
-    //                           "$formattedTotal",
-    //                           style: const TextStyle(
-    //                               fontSize: 13,
-    //                               color: Colors.red,
-    //                               fontWeight: FontWeight.w400),
-    //                         ),
-    //                         Text(
-    //                           DateFormat('dd/MM/yy hh:mm')
-    //                               .format(expenses[i].date),
-    //                           style: TextStyle(
-    //                               fontSize: 14,
-    //                               color: Theme.of(context)
-    //                                   .colorScheme
-    //                                   .outline,
-    //                               fontWeight: FontWeight.w400),
-    //                         ),
-    //                       ],
-    //                     )
-    //                   ],
-    //                 ),
-    //               ),
-    //             ),
-    //           );
-    //         } else {
-    //           return const SizedBox
-    //               .shrink(); // Or any other placeholder widget
-    //         }
-    //       }),
-    // );
   }
 }

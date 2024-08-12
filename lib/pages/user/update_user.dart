@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:quan_ly_doanh_thu/app.dart';
-import 'package:transaction_repository/transaction_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
-Future<void> UpdateUserScreen(
-    BuildContext context, MyUser user) async {
+Future<void> UpdateUserScreen(BuildContext context, MyUser user) async {
   final TextEditingController textNameController =
-  TextEditingController(text: user.name);
+      TextEditingController(text: user.name);
   final TextEditingController textEmailController =
-  TextEditingController(text: user.email);
-  // final TextEditingController textPhoneController =
-  // TextEditingController(text: user.roles);
-  // final TextEditingController textNoteController =
-  // TextEditingController(text: user.note);
+      TextEditingController(text: user.email);
   String? selectedRole;
-  return showDialog(
+
+  await showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
@@ -45,14 +40,14 @@ Future<void> UpdateUserScreen(
                   hint: selectedRole == null
                       ? const Text('Chọn quyền')
                       : Text(
-                    selectedRole!,
-                    style: const TextStyle(color: Colors.green),
-                  ),
+                          selectedRole!,
+                          style: const TextStyle(color: Colors.green),
+                        ),
                   isExpanded: true,
                   iconSize: 35.0,
                   style: const TextStyle(color: Colors.blue),
                   items: ['admin', 'user'].map(
-                        (val) {
+                    (val) {
                       return DropdownMenuItem<String>(
                         value: val,
                         child: Text(val),
@@ -62,8 +57,8 @@ Future<void> UpdateUserScreen(
                   onChanged: (val) {
                     // setState(
                     //       () {
-                        selectedRole = val;
-                      // },
+                    selectedRole = val;
+                    // },
                     // );
                   },
                 ),
@@ -72,6 +67,12 @@ Future<void> UpdateUserScreen(
           ),
         ),
         actions: [
+          TextButton(
+            child: const Text('Thoát'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
           MaterialButton(
               color: Theme.of(context).colorScheme.secondary,
               textColor: Colors.white,
@@ -79,9 +80,9 @@ Future<void> UpdateUserScreen(
               onPressed: () async {
                 final newUserName = textNameController.text;
                 final newUserEmail = textEmailController.text;
-                // final newCustomerPhone = textPhoneController.text;
                 if (newUserName.isEmpty ||
-                    newUserEmail.isEmpty ) {
+                    newUserEmail.isEmpty ||
+                    selectedRole == null) {
                   // Show an error message (e.g., usinga SnackBar or Dialog)
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -101,17 +102,17 @@ Future<void> UpdateUserScreen(
                   //         content: Text('Đã có khách hàng có tên này!')),
                   //   );
                   // } else {
-                    // Update the driver object
-                    user.name = newUserName;
-                    // user.email = newUserEmail;
-                    user.roles = selectedRole!;
-                    user.date = DateTime.now();
+                  // Update the driver object
+                  user.name = newUserName;
+                  // user.email = newUserEmail;
+                  user.roles = selectedRole!;
+                  user.date = DateTime.now();
 
-                    // Update driver in Firebase
-                    await userRepository.updateUser(user);
-                    Navigator.of(context).pop(); // Close the dialog
-                  }
+                  // Update driver in Firebase
+                  await userRepository.updateUser(user);
+                  Navigator.of(context).pop(); // Close the dialog
                 }
+              }
               // }
               ),
         ],

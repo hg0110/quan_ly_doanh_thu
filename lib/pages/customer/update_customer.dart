@@ -12,7 +12,7 @@ Future<void> UpdateCustomerScreen(
   final TextEditingController textNoteController =
       TextEditingController(text: customer.note);
 
-  return showDialog(
+  await showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
@@ -40,6 +40,12 @@ Future<void> UpdateCustomerScreen(
           ),
         ),
         actions: [
+          TextButton(
+            child: const Text('Thoát'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
           MaterialButton(
               color: Theme.of(context).colorScheme.secondary,
               textColor: Colors.white,
@@ -61,7 +67,7 @@ Future<void> UpdateCustomerScreen(
 
                   // Check if a customer with the same name exists
                   final existingCustomer =
-                  await transactionRepo.getCustomerByName(newCustomerName);
+                      await transactionRepo.getCustomerByName(newCustomerName);
 
                   if (existingCustomer != null) {
                     // Show an error message (e.g., using a SnackBar or Dialog)

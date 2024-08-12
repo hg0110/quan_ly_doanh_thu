@@ -5,20 +5,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:quan_ly_doanh_thu/pages/car/blocs/get_car_bloc/get_car_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/customer/blocs/get_customer_bloc/get_customer_bloc.dart';
-import 'package:quan_ly_doanh_thu/pages/shipping_order/shipping_order_screen.dart';
 import 'package:shipping_order_repository/shipping_order_repository.dart';
 import 'package:transaction_repository/transaction_repository.dart';
+import 'package:user_repository/user_repository.dart';
 import 'package:uuid/uuid.dart';
 
 import '../driver/blocs/get_driver_bloc/get_driver_bloc.dart';
 import 'blocs/create_shipping_order_bloc/create_shipping_order_bloc.dart';
-import 'blocs/get_shipping_order_bloc/get_shipping_order_bloc.dart';
 
 class AddShippingOrder extends StatefulWidget {
-  const AddShippingOrder({super.key, required this.onRefresh});
-
-  final VoidCallback onRefresh;
-  // final ShippingOrderRepository shippingOrderRepository;
+  const AddShippingOrder({super.key});
 
   @override
   State<AddShippingOrder> createState() => _AddShippingOrderState();
@@ -29,26 +25,21 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
   final TextEditingController textNoteController = TextEditingController();
   final TextEditingController textDateController = TextEditingController();
   bool isLoading = false;
-  Driver driver = Driver.empty;
-  Customer customer = Customer.empty;
-  Car car = Car.empty;
-
-  // final List<Driver> driver;
+  Car? selectedCar;
+  Driver? selectedDriver;
+  Customer? selectedCustomer;
+  MyUser? user;
 
   ShippingOrder shippingOrder = ShippingOrder.empty;
-  String? selectedDriverId;
-  Driver? selectedDriver;
-  String? selectedCarId;
-  String? selectedCustomerId;
   DateTime selectDate = DateTime.now();
 
   @override
   void initState() {
     textDateController.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
     shippingOrder = ShippingOrder.empty;
-    driver = Driver.empty;
-    car = Car.empty;
-    customer = Customer.empty;
+    selectedDriver = null;
+    selectedCar = null;
+    selectedCustomer = null;
     super.initState();
   }
 
@@ -89,13 +80,11 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                               ),
                             ),
                             const SizedBox(height: 10),
-                            // latte List<Driver> driver;
-                            // final driverName = await DriverRepository.get;
-                            DropdownButton<String>(
-                              hint: selectedDriverId == null
+                            DropdownButton<Driver>(
+                              hint: selectedDriver == null
                                   ? const Text('Lái Xe')
                                   : Text(
-                                selectedDriverId!,
+                                      selectedDriver!.name,
                                       style: const TextStyle(
                                           color: Colors.green, fontSize: 13),
                                     ),
@@ -103,11 +92,10 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                               iconSize: 40.0,
                               style: const TextStyle(
                                   color: Colors.green, fontSize: 16),
-                              value: selectedDriverId,
-                              // Store the selected driver ID
+                              value: selectedDriver,
                               items: state.driver.map((driver) {
-                                return DropdownMenuItem<String>(
-                                  value: driver.name,
+                                return DropdownMenuItem<Driver>(
+                                  value: driver,
                                   child: Row(
                                     children: [
                                       Text(driver.name),
@@ -117,22 +105,18 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                                   ),
                                 );
                               }).toList(),
-                              onChanged: (String? newValue) {
+                              onChanged: (Driver? newValue) {
                                 setState(() {
-                                  // selectedDriver = state.driver.firstWhere(
-                                  //       (driver) => driver.driverId == newValue,
-                                  //   orElse: () => Driver.empty, // Return an empty Driver object if no match is found
-                                  // );
-                                  selectedDriverId = newValue!;
+                                  selectedDriver = newValue!;
                                 });
                               },
                             ),
                             const SizedBox(height: 10),
-                            DropdownButton<String>(
-                              hint: selectedCarId == null
+                            DropdownButton<Car>(
+                              hint: selectedCar == null
                                   ? const Text('Xe')
                                   : Text(
-                                      selectedCarId!,
+                                      selectedCar!.BKS,
                                       style: const TextStyle(
                                           color: Colors.green, fontSize: 13),
                                     ),
@@ -140,26 +124,25 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                               iconSize: 40.0,
                               style: const TextStyle(
                                   color: Colors.green, fontSize: 16),
-                              value: selectedCarId,
-                              // Store the selected  ID
+                              value: selectedCar,
                               items: state1.car.map((car) {
-                                return DropdownMenuItem<String>(
-                                  value: car.BKS,
+                                return DropdownMenuItem<Car>(
+                                  value: car,
                                   child: Text(car.BKS),
                                 );
                               }).toList(),
-                              onChanged: (String? newValue) {
+                              onChanged: (Car? newValue) {
                                 setState(() {
-                                  selectedCarId = newValue;
+                                  selectedCar = newValue;
                                 });
                               },
                             ),
                             const SizedBox(height: 10),
-                            DropdownButton<String>(
-                              hint: selectedCustomerId == null
+                            DropdownButton<Customer>(
+                              hint: selectedCustomer == null
                                   ? const Text('Khách hàng')
                                   : Text(
-                                      selectedCustomerId!,
+                                      selectedCustomer!.name,
                                       style: const TextStyle(
                                           color: Colors.green, fontSize: 13),
                                     ),
@@ -167,18 +150,16 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                               iconSize: 40.0,
                               style: const TextStyle(
                                   color: Colors.green, fontSize: 16),
-                              value: selectedCustomerId,
-                              // Store the selected  ID
+                              value: selectedCustomer,
                               items: state2.customer.map((customer) {
-                                return DropdownMenuItem<String>(
-                                  value: customer.name,
+                                return DropdownMenuItem<Customer>(
+                                  value: customer,
                                   child: Text(customer.name),
                                 );
                               }).toList(),
-                              onChanged: (String? newValue) {
+                              onChanged: (Customer? newValue) {
                                 setState(() {
-                                  selectedCustomerId = newValue;
-                                  // selectedCustomerId = customer.name;
+                                  selectedCustomer = newValue;
                                 });
                               },
                             ),
@@ -248,34 +229,22 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                               ],
                             ),
                             ElevatedButton(
-                              onPressed: () async{
-                                // int nextOrderId = await context.read<ShippingOrderRepository>().generateNextOrderId();
+                              onPressed: () async {
                                 setState(() {
                                   shippingOrder.ShippingId = const Uuid().v1();
                                   shippingOrder.name = textLenhController.text;
-                                  driver.name = selectedDriverId!;
-                                  car.BKS = selectedCarId!;
-                                  customer.name = selectedCustomerId!;
+                                  shippingOrder.car = selectedCar ?? Car.empty;
+                                  shippingOrder.driver =
+                                      selectedDriver ?? Driver.empty;
+                                  shippingOrder.customer =
+                                      selectedCustomer ?? Customer.empty;
+                                  shippingOrder.user = user ?? MyUser.empty;
                                 });
                                 context
                                     .read<CreateShippingOrderBloc>()
                                     .add(CreateShippingOrder(shippingOrder));
                                 textLenhController.clear();
-                                widget.onRefresh();
-                                // textAddressController.clear();
-                                // textPhoneController.clear();
-                                // context.read<GetShippingOrderBloc>().add(GetShippingOrder());
-                                // Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //       builder: (context) => BlocProvider(
-                                //         create: (context) =>
-                                //             GetShippingOrderBloc(
-                                //                 FirebaseShippingOrderRepo())
-                                //               ..add(GetShippingOrder()),
-                                //         child: const ShippingOrderScreen(),
-                                //       ),
-                                //     ));
+                                Navigator.of(context).pop();
                               },
                               child: const Text('Lưu'),
                             ),

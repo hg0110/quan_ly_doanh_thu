@@ -145,11 +145,11 @@ class _MyDrawerState extends State<MyDrawer> {
                   }
                 },
               ),
-              MyListTile(
-                icon: Icons.home,
-                text: 'TRANG CHỦ',
-                onTap: () => Navigator.pop(context),
-              ),
+              // MyListTile(
+              //   icon: Icons.home,
+              //   text: 'TRANG CHỦ',
+              //   onTap: () => Navigator.pop(context),
+              // ),
               if (state.role == 'admin') ...[
                 MyListTile(
                   icon: Icons.person,
@@ -187,7 +187,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 text: 'DỊCH VỤ',
                 onTap: widget.onCategoryTap,
               ),
-              const SizedBox(height: 100.0),
+              const SizedBox(height: 50.0),
               ElevatedButton(
                 onPressed: () {
                   _bloc.add(const SignOutRequired());

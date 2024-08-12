@@ -182,9 +182,9 @@ class _CustomerScreenState extends State<CustomerScreen> {
   }
 
   Future<void> _showDeleteConfirmationDialog(
-      BuildContext context, Customer customer) async {
+      BuildContext parentContext, Customer customer) async {
     return showDialog<void>(
-      context: context,
+      context: parentContext,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
@@ -207,7 +207,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
             TextButton(
               child: const Text('Đồng ý'),
               onPressed: () {
-                context
+                parentContext
                     .read<DeleteCustomerBloc>()
                     .add(DeleteCustomer(customer.customerId));
                 Navigator.of(context).pop();

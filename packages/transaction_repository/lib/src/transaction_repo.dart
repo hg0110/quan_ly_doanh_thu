@@ -10,6 +10,10 @@ abstract class TransactionRepository {
 
   Future<List<Category>> getCategory();
 
+	Future<Category?> getCategoryByName(String name);
+
+	Future<void> updateCategory(Category category);
+
   Future<void> deleteCategory(String categoryId);
 
   Future<void> createExpense(Expense expense);

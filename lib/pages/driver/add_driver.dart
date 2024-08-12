@@ -4,14 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/driver/blocs/create_driver_bloc/create_driver_bloc.dart';
 import 'package:uuid/uuid.dart';
 
-Future getAddDriver(BuildContext context) {
+Future getAddDriver(BuildContext parentContext) {
   final TextEditingController textNameController = TextEditingController();
   final TextEditingController textAddressController = TextEditingController();
   final TextEditingController textPhoneController = TextEditingController();
   final TextEditingController textNoteController = TextEditingController();
 
   return showDialog(
-    context: context,
+    context: parentContext,
     builder: (context) {
       return AlertDialog(
         title: const Text('Thêm lái xe'),
@@ -41,7 +41,7 @@ Future getAddDriver(BuildContext context) {
           MaterialButton(
             color: Theme.of(context).colorScheme.secondary,
             textColor: Colors.white,
-            child: const Text("OK"),
+            child: const Text("Lưu"),
             onPressed: () async {
               final newDriverName = textNameController.text;
               final newDriverAddress = textAddressController.text;
@@ -64,7 +64,8 @@ Future getAddDriver(BuildContext context) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Đã có lái xe có tên này!')),
                   );
-                } else {
+                  return;
+                }
                   final newDriver = Driver(
                       driverId: const Uuid().v1(),
                       name: newDriverName,
@@ -72,7 +73,7 @@ Future getAddDriver(BuildContext context) {
                       phone: newDriverPhone,
                       note: textNoteController.text,
                       date: DateTime.now());
-                  context.read<CreateDriverBloc>().add(CreateDriver(newDriver));
+                  parentContext.read<CreateDriverBloc>().add(CreateDriver(newDriver));
                   textNameController.clear();
                   textAddressController.clear();
                   textPhoneController.clear();
@@ -80,7 +81,6 @@ Future getAddDriver(BuildContext context) {
                   Navigator.of(context).pop();
                 }
               }
-            },
           )
         ],
       );

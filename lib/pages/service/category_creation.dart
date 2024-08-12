@@ -6,15 +6,6 @@ import 'package:uuid/uuid.dart';
 import 'blocs/create_category_bloc/create_category_bloc.dart';
 
 Future getCategoryCreation(BuildContext context) {
-  // List<String> myCategoriesIcons = [
-  //   'entertainment',
-  //   'food',
-  //   'home',
-  //   'pet',
-  //   'shopping',
-  //   'tech',
-  //   'travel'
-  // ];
 
   return showDialog(
       context: context,

@@ -20,21 +20,6 @@ class _DriverScreenState extends State<DriverScreen> {
   late Driver driver;
   bool isLoading = false;
 
-  // void _showUpdateDriverScreen(BuildContext context, Driver driver) async {
-  //   // Navigate to the update screen and wait for the result
-  //   final updatedDriver = await Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => UpdateDriverScreen(driver: driver),
-  //     ),
-  //   );
-  //
-  //   // If the driver was updated, refresh the driver list
-  //   if (updatedDriver != null){
-  //     context.read<GetDriverBloc>().add(GetDriver());
-  //   }
-  // }
-
   @override
   void initState() {
     driver = Driver.empty;
@@ -71,6 +56,7 @@ class _DriverScreenState extends State<DriverScreen> {
                 const SnackBar(content: Text('Không xóa được lái xe')),
               );
             }
+            context.read<GetDriverBloc>().add(GetDriver());
           },
         ),
       ],
@@ -94,8 +80,7 @@ class _DriverScreenState extends State<DriverScreen> {
                   );
                 }
                 if (state is GetDriverSuccess) {
-                  state.driver
-                      .sort((a, b) => b.date.compareTo(a.date));
+                  state.driver.sort((a, b) => b.date.compareTo(a.date));
                   return ListView.builder(
                     scrollDirection: Axis.vertical,
                     itemCount: state.driver.length,
@@ -103,14 +88,21 @@ class _DriverScreenState extends State<DriverScreen> {
                       final Driver driver = state.driver[index];
                       return Dismissible(
                         key: Key(driver.driverId),
+                        confirmDismiss: (direction) async {
+                          return await _showDeleteConfirmationDialog(
+                              context, driver);
+                        },
                         onDismissed: (direction) {
-                          _showDeleteConfirmationDialog(context, driver);
+                          context
+                              .read<DeleteDriverBloc>()
+                              .add(DeleteDriver(driver.driverId));
                         },
                         background: Container(
                           color: Colors.red,
                           alignment: Alignment.centerRight,
                           padding: const EdgeInsets.only(right: 16.0),
-                          child: const Icon(Icons.delete, color: Colors.white),
+                          child:
+                              const Icon(Icons.delete, color: Colors.white),
                         ),
                         child: Card(
                           surfaceTintColor: Colors.green,
@@ -148,8 +140,9 @@ class _DriverScreenState extends State<DriverScreen> {
                                       .format(driver.date),
                                   style: TextStyle(
                                       fontSize: 14,
-                                      color:
-                                      Theme.of(context).colorScheme.outline,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .outline,
                                       fontWeight: FontWeight.w400),
                                 )
                               ],
@@ -161,9 +154,12 @@ class _DriverScreenState extends State<DriverScreen> {
                                     width: 30,
                                     child: IconButton(
                                       icon: const Icon(Icons.edit),
-                                      onPressed:  ()async{
-                                        var updateDriver = await UpdateDriverScreen(context, driver);
-                                          context.read<GetDriverBloc>().add(GetDriver());
+                                      onPressed: () async {
+                                        await UpdateDriverScreen(
+                                                context, driver);
+                                        context
+                                            .read<GetDriverBloc>()
+                                            .add(GetDriver());
                                       },
                                     ),
                                   ),
@@ -186,10 +182,9 @@ class _DriverScreenState extends State<DriverScreen> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            var newDriver = await getAddDriver(context);
-            if (newDriver != null) {
-              context.read<GetDriverBloc>().add(GetDriver());
-            }
+            await getAddDriver(context);
+
+            context.read<GetDriverBloc>().add(GetDriver());
           },
           backgroundColor: Theme.of(context).colorScheme.secondary,
           child: const Icon(
@@ -201,10 +196,11 @@ class _DriverScreenState extends State<DriverScreen> {
     );
   }
 
-  Future<void> _showDeleteConfirmationDialog(
-      BuildContext context, Driver driver) async {
-    return showDialog<void>(
-      context: context,
+  Future<bool> _showDeleteConfirmationDialog(
+      BuildContext parentContext, Driver driver) async {
+    bool confirmDelete = false;
+    await showDialog<void>(
+      context: parentContext,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
@@ -226,7 +222,7 @@ class _DriverScreenState extends State<DriverScreen> {
             TextButton(
               child: const Text('Đồng ý'),
               onPressed: () {
-                context
+                parentContext
                     .read<DeleteDriverBloc>()
                     .add(DeleteDriver(driver.driverId));
                 Navigator.of(context).pop();
@@ -236,5 +232,6 @@ class _DriverScreenState extends State<DriverScreen> {
         );
       },
     );
+    return confirmDelete;
   }
 }

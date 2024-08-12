@@ -183,9 +183,9 @@ class _CarScreenState extends State<CarScreen> {
   }
 
   Future<void> _showDeleteConfirmationDialog(
-      BuildContext context, Car car) async {
+      BuildContext parentContext, Car car) async {
     return showDialog<void>(
-      context: context,
+      context: parentContext,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
@@ -207,7 +207,7 @@ class _CarScreenState extends State<CarScreen> {
             TextButton(
               child: const Text('Đồng ý'),
               onPressed: () {
-                context.read<DeleteCarBloc>().add(DeleteCar(car.carId));
+                parentContext.read<DeleteCarBloc>().add(DeleteCar(car.carId));
                 Navigator.of(context).pop();
               },
             ),

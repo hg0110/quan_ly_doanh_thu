@@ -70,6 +70,19 @@ class FirebaseTransactionRepo implements TransactionRepository {
   }
 
   @override
+  Future<void> updateCategory(Category category) async {
+    try {
+      await categoryCollection
+          .doc(category.categoryId)
+          .update(category.toEntity().toDocument());
+      return ;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
   Future<List<Category>> getCategory() async {
     try {
       return await categoryCollection.get().then((value) => value.docs
@@ -79,6 +92,25 @@ class FirebaseTransactionRepo implements TransactionRepository {
     } catch (e) {
       log(e.toString());
       rethrow;
+    }
+  }
+
+
+  @override
+  Future<Category?> getCategoryByName(String name) async {
+    try {
+      final querySnapshot = await categoryCollection
+          .where('name', isEqualTo: name)
+          .get();if (querySnapshot.docs.isNotEmpty) {
+        return Category.fromEntity(
+            CategoryEntity.fromDocument(querySnapshot.docs.first.data()));
+      } else {
+        return null;
+      }
+    } catch (e) {
+      // Handle potential errors (e.g., database connection errors)
+      print('Error getting Category by name: $e');
+      return null;
     }
   }
 

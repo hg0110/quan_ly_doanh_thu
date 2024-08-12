@@ -3,19 +3,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:quan_ly_doanh_thu/pages/service/blocs/create_category_bloc/create_category_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/service/blocs/get_categories_bloc/get_categories_bloc.dart';
+import 'package:quan_ly_doanh_thu/pages/service/update_service.dart';
 import 'package:transaction_repository/transaction_repository.dart';
 
 import 'blocs/delete_category_bloc/delete_category_bloc.dart';
 import 'category_creation.dart';
 
-class CarScreen extends StatefulWidget {
-  const CarScreen({super.key});
+class ServiceScreen extends StatefulWidget {
+  const ServiceScreen({super.key});
 
   @override
-  State<CarScreen> createState() => _CarScreenState();
+  State<ServiceScreen> createState() => _ServiceScreenState();
 }
 
-class _CarScreenState extends State<CarScreen> {
+class _ServiceScreenState extends State<ServiceScreen> {
   late Category category;
   bool isLoading = false;
 
@@ -40,7 +41,7 @@ class _CarScreenState extends State<CarScreen> {
                 });
               } else if (state is CreateCategoryFailure) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Không thể dịch vụ')),
+                  const SnackBar(content: Text('Không thể thêm dịch vụ')),
                 );
                 setState(() {
                   isLoading = false;
@@ -52,12 +53,12 @@ class _CarScreenState extends State<CarScreen> {
             listener: (context, state) {
               if (state is DeleteCategorySuccess) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Đã xóa xe thành công')),
+                  const SnackBar(content: Text('Đã xóa dịch vụ thành công')),
                 );
                 context.read<GetCategoriesBloc>().add(GetCategories());
               } else if (state is DeleteCategoryFailure) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Không xóa được xe')),
+                  const SnackBar(content: Text('Không xóa được dịch vụ')),
                 );
               }
             },
@@ -67,7 +68,7 @@ class _CarScreenState extends State<CarScreen> {
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.secondary,
             title: const Text(
-              "Xe",
+              "Dịch Vụ",
               style: TextStyle(color: Colors.white),
             ),
           ),
@@ -106,7 +107,7 @@ class _CarScreenState extends State<CarScreen> {
                           child: ListTile(
                             title: Row(
                               children: [
-                                const Text("Tên Xe: "),
+                                const Text("Tên Dịch Vụ: "),
                                 Text(category.name),
                               ],
                             ),
@@ -144,8 +145,8 @@ class _CarScreenState extends State<CarScreen> {
                                     child: IconButton(
                                       icon: const Icon(Icons.edit),
                                       onPressed:  ()async{
-                                        // await UpdateCarScreen(context, car);
-                                        // context.read<GetCarBloc>().add(GetCar());
+                                        await UpdateCategoryScreen(context, category);
+                                        context.read<GetCategoriesBloc>().add(GetCategories());
                                       },
                                     ),
                                   ),
@@ -187,9 +188,9 @@ class _CarScreenState extends State<CarScreen> {
   }
 
   Future<void> _showDeleteConfirmationDialog(
-      BuildContext context, Category category) async {
+      BuildContext parentContext, Category category) async {
     return showDialog<void>(
-      context: context,
+      context: parentContext,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
@@ -211,7 +212,7 @@ class _CarScreenState extends State<CarScreen> {
             TextButton(
               child: const Text('Đồng ý'),
               onPressed: () {
-                context.read<DeleteCategoryBloc>().add(DeleteCategory(category.categoryId));
+                parentContext.read<DeleteCategoryBloc>().add(DeleteCategory(category.categoryId));
                 Navigator.of(context).pop();
               },
             ),

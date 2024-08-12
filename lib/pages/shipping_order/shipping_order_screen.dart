@@ -151,13 +151,13 @@ class _ShippingOrderScreenState extends State<ShippingOrderScreen> {
                                     ..add(GetCar()),
                             ),
                           ],
-                          child: AddShippingOrder(
-                            onRefresh: () {
-                              // Refresh data on ShippingOrderScreen
-                              context
-                                  .read<GetShippingOrderBloc>()
-                                  .add(GetShippingOrder());
-                            },
+                          child: const AddShippingOrder(
+                            // onRefresh: () {
+                            //   // Refresh data on ShippingOrderScreen
+                            //   context
+                            //       .read<GetShippingOrderBloc>()
+                            //       .add(GetShippingOrder());
+                            // },
                               // shippingOrderRepository: FirebaseShippingOrderRepo(),
                           ),
                         )),

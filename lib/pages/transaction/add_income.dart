@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:quan_ly_doanh_thu/pages/shipping_order/add_shipping_order.dart';
 import 'package:quan_ly_doanh_thu/pages/shipping_order/blocs/get_shipping_order_bloc/get_shipping_order_bloc.dart';
+import 'package:quan_ly_doanh_thu/pages/shipping_order/shipping_order_screen.dart';
 import 'package:quan_ly_doanh_thu/pages/transaction/blocs/create_transaction_bloc/create_transaction_bloc.dart';
 import 'package:shipping_order_repository/shipping_order_repository.dart';
 import 'package:transaction_repository/transaction_repository.dart';
@@ -28,10 +30,10 @@ class _AddIncomeState extends State<AddIncome> {
   TextEditingController dateController = TextEditingController();
   DateTime selectDate = DateTime.now();
   bool isLoading = false;
-  String? selectedShippingOrder;
+  ShippingOrder? selectedShippingOrder;
 
   // Customer customer = Customer.empty;
-  ShippingOrder shippingOrder = ShippingOrder.empty;
+  // ShippingOrder shippingOrder = ShippingOrder.empty;
 
   // late Income income;
   late Transactions transactions;
@@ -44,6 +46,7 @@ class _AddIncomeState extends State<AddIncome> {
     // expense = Expense.empty;
     // expense.expenseId = const Uuid().v1();
     // income = Income.empty;
+    selectedShippingOrder = null;
     transactions = Transactions.empty;
     super.initState();
   }
@@ -105,11 +108,11 @@ class _AddIncomeState extends State<AddIncome> {
                       const SizedBox(
                         height: 32,
                       ),
-                      DropdownButton<String>(
+                      DropdownButton<ShippingOrder>(
                         hint: selectedShippingOrder == null
                             ? const Text('Lệnh vận chuyển')
                             : Text(
-                                selectedShippingOrder!,
+                                selectedShippingOrder!.name,
                                 style: const TextStyle(
                                     color: Colors.green, fontSize: 13),
                               ),
@@ -119,8 +122,8 @@ class _AddIncomeState extends State<AddIncome> {
                         value: selectedShippingOrder,
                         // Store the selected  ID
                         items: state.shippingOrder.map((shippingOrder) {
-                          return DropdownMenuItem<String>(
-                            value: shippingOrder.name,
+                          return DropdownMenuItem<ShippingOrder>(
+                            value: shippingOrder,
                             child: Row(
                               children: [
                                 Text(shippingOrder.name),
@@ -131,9 +134,9 @@ class _AddIncomeState extends State<AddIncome> {
                             ),
                           );
                         }).toList(),
-                        onChanged: (String? newValue) {
+                        onChanged: (ShippingOrder? newValue) {
                           setState(() {
-                            selectedShippingOrder = newValue!;
+                            selectedShippingOrder = newValue;
                           });
                         },
                       ),
@@ -355,25 +358,15 @@ class _AddIncomeState extends State<AddIncome> {
                                   setState(() {
                                     transactions.amount =
                                         int.parse(incomeController.text);
-                                    transactions.shippingOrder.name =
-                                        selectedShippingOrder!;
+                                    transactions.shippingOrder =
+                                        selectedShippingOrder ?? ShippingOrder.empty;
                                     transactions.bills = 'thu';
-                                    // transactions =Transactions.empty;
                                   });
 
                                   context
                                       .read<CreateTransactionBloc>()
                                       .add(CreateTransaction(transactions));
 
-                                  // setState(() {
-                                  //   incomeController.clear();
-                                  //   selectedShippingOrder = null;
-                                  //   dateController.text =
-                                  //       DateFormat('dd/MM/yyyy')
-                                  //           .format(DateTime.now());
-                                  //   transactions = Transactions
-                                  //       .empty; // Reset transactions object
-                                  // });
 
                                   Navigator.of(context).pop();
                                 },

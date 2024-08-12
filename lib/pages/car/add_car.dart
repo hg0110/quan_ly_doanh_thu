@@ -5,16 +5,16 @@ import 'package:uuid/uuid.dart';
 
 import 'blocs/create_car_bloc/create_car_bloc.dart';
 
-Future getAddCar(BuildContext context) {
+Future getAddCar(BuildContext parentContext) {
   final TextEditingController textNameController = TextEditingController();
   final TextEditingController textBKSController = TextEditingController();
   final TextEditingController textNoteController = TextEditingController();
 
   return showDialog(
-    context: context,
+    context: parentContext,
     builder: (context) {
       return AlertDialog(
-        title: const Text('Add a car'),
+        title: const Text('Thêm xe'),
         content: SingleChildScrollView(
           child: Column(
             children: [
@@ -55,8 +55,7 @@ Future getAddCar(BuildContext context) {
                 if (existingCar != null) {
                   // Show an error message (e.g., using a SnackBar or Dialog)
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Đã có xe có số hiệu này!')),
+                    const SnackBar(content: Text('Đã có xe có số hiệu này!')),
                   );
                 } else {
                   final newCar = Car(
@@ -65,7 +64,7 @@ Future getAddCar(BuildContext context) {
                       BKS: newCarBKS,
                       note: textNoteController.text,
                       date: DateTime.now());
-                  context.read<CreateCarBloc>().add(CreateCar(newCar));
+                  parentContext.read<CreateCarBloc>().add(CreateCar(newCar));
                   textNameController.clear();
                   textBKSController.clear();
                   textNoteController.clear();

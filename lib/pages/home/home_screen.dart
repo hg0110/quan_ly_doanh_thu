@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/car/blocs/get_car_bloc/get_car_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/common_screen.dart';
 import 'package:quan_ly_doanh_thu/pages/customer/customer_screen.dart';
+import 'package:quan_ly_doanh_thu/pages/service/blocs/delete_category_bloc/delete_category_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/shipping_order/shipping_order_screen.dart';
 import 'package:quan_ly_doanh_thu/pages/transaction/blocs/get_transaction_bloc/get_Transaction_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/transaction/transaction_screen.dart';
@@ -16,10 +17,9 @@ import 'package:shipping_order_repository/shipping_order_repository.dart';
 import 'package:transaction_repository/transaction_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
+import '../car/blocs/create_car_bloc/create_car_bloc.dart';
 import '../service/blocs/create_category_bloc/create_category_bloc.dart';
-import '../service/blocs/create_expense_bloc/create_expense_bloc.dart';
 import '../service/blocs/get_categories_bloc/get_categories_bloc.dart';
-import '../service/blocs/get_expenses_bloc/get_expenses_bloc.dart';
 import '../car/blocs/delete_car_bloc/delete_car_bloc.dart';
 import '../car/car_screen.dart';
 import '../components/drawer.dart';
@@ -28,9 +28,12 @@ import '../customer/blocs/get_customer_bloc/get_customer_bloc.dart';
 import '../driver/blocs/delete_driver_bloc/delete_driver_bloc.dart';
 import '../driver/blocs/get_driver_bloc/get_driver_bloc.dart';
 import '../driver/driver_screen.dart';
+import '../service/service_screen.dart';
 import '../shipping_order/blocs/get_shipping_order_bloc/get_shipping_order_bloc.dart';
 import '../signup/bloc/signup_bloc/signup_bloc.dart';
 import '../stats/stats.dart';
+import '../transaction/blocs/create_expense_bloc/create_expense_bloc.dart';
+import '../transaction/blocs/get_expenses_bloc/get_expenses_bloc.dart';
 import '../user/blocs/delete_user_bloc/delete_user_bloc.dart';
 import 'main_screen.dart';
 
@@ -164,6 +167,8 @@ class _HomeScreenState extends State<HomeScreen> {
               create: (context) =>
                   GetCarBloc(FirebaseShippingOrderRepo())..add(GetCar()),
             ),
+            BlocProvider<CreateCarBloc>(
+                create: (context) => CreateCarBloc(FirebaseShippingOrderRepo())),
             BlocProvider(
               create: (context) => DeleteCarBloc(
                   shippingOrderRepository: FirebaseShippingOrderRepo()),
@@ -203,16 +208,16 @@ class _HomeScreenState extends State<HomeScreen> {
       MaterialPageRoute<Category>(
         builder: (BuildContext context) => MultiBlocProvider(
           providers: [
-            // BlocProvider(
-            //   create: (context) =>
-            //       GetDriverBloc(FirebaseDriverRepo())..add(GetDriver()),
-            // ),
-            // BlocProvider(
-            //   create: (context) =>
-            //       DeleteDriverBloc(driverRepository: FirebaseDriverRepo()),
-            // ),
+            BlocProvider(
+              create: (context) =>
+                  GetCategoriesBloc(FirebaseTransactionRepo())..add(GetCategories()),
+            ),
+            BlocProvider(
+              create: (context) =>
+                  DeleteCategoryBloc(transactionRepository: FirebaseTransactionRepo()),
+            ),
           ],
-          child: const DriverScreen(),
+          child: const ServiceScreen(),
         ),
       ),
     );
@@ -306,10 +311,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           create: (context) =>
                               CreateExpenseBloc(FirebaseTransactionRepo()),
                         ),
-                        // BlocProvider(
-                        //   create: (context) =>
-                        //       CreateTransactionBloc(FirebaseTransactionRepo()),
-                        // ),
                       ],
                       child: const CommonScreen(),
                     ),

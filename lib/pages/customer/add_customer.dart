@@ -5,9 +5,9 @@ import 'package:uuid/uuid.dart';
 
 import 'blocs/create_customer_bloc/create_customer_bloc.dart';
 
-Future getAddCustomer(BuildContext context) {
+Future getAddCustomer(BuildContext parentContext1) {
   return showDialog(
-      context: context,
+      context: parentContext1,
       builder: (context) {
         final TextEditingController textNameController =
             TextEditingController();
@@ -79,7 +79,7 @@ Future getAddCustomer(BuildContext context) {
                         phone: newCustomerPhone,
                         note: textNoteController.text,
                         date: DateTime.now());
-                    context
+                    parentContext1
                         .read<CreateCustomerBloc>()
                         .add(CreateCustomer(newCustomer));
                     textNameController.clear();

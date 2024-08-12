@@ -314,85 +314,172 @@ class MainScreen extends StatelessWidget {
                       //     formatter.format(expenses[i].amount);
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
-                        child: Card(
-                          shadowColor: Colors.red,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    if (transaction.bills == 'thu') ...[
-                                      Text(
-                                        transaction.shippingOrder.name,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onBackground,
-                                          fontWeight: FontWeight.w500,
+                        child: FittedBox(
+                          child: Card(
+                            shadowColor: Colors.red,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      if (transaction.bills == 'thu') ...[
+                                        Column(
+                                          children: [
+                                            Text(
+                                              'Tên lệnh',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onBackground,
+                                                fontWeight: FontWeight.w300,
+                                              ),
+                                            ),
+                                            Text(
+                                              transaction.shippingOrder.name,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onBackground,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
+                                        const SizedBox(
+                                          width: 12,
+                                        ),
+                                        Column(
+                                          children: [
+                                            Text(
+                                              'Khách hàng',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onBackground,
+                                                fontWeight: FontWeight.w300,
+                                              ),
+                                            ),
+                                            Text(
+                                              transaction
+                                                  .shippingOrder.customer.name,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onBackground,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                      // Stack(
+                                      //   alignment: Alignment.center,
+                                      //   children: [
+                                      //     Container(
+                                      //       width: 50,
+                                      //       height: 50,
+                                      //       decoration: BoxDecoration(
+                                      //           color: Color(
+                                      //               expenses[i].category.color),
+                                      //           shape: BoxShape.circle),
+                                      //     ),
+                                      //     Image.asset(
+                                      //       'assets/${expenses[i].category.icon}.png',
+                                      //       scale: 2,
+                                      //       color: Colors.white,
+                                      //     )
+                                      //   ],
+                                      // ),
+                                      const SizedBox(width: 12),
+                                      if (transaction.bills == 'chi') ...[
+                                        Row(
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Text(
+                                                  'Tên dịch vụ',
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .onBackground,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  transaction.category.name,
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .onBackground,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(width: 12),
+                                            Column(
+                                              children: [
+                                                Text('Tên xe',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .onBackground,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    )),
+                                                Text('19e123445',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .onBackground,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    )),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ],
-                                    // Stack(
-                                    //   alignment: Alignment.center,
-                                    //   children: [
-                                    //     Container(
-                                    //       width: 50,
-                                    //       height: 50,
-                                    //       decoration: BoxDecoration(
-                                    //           color: Color(
-                                    //               expenses[i].category.color),
-                                    //           shape: BoxShape.circle),
-                                    //     ),
-                                    //     Image.asset(
-                                    //       'assets/${expenses[i].category.icon}.png',
-                                    //       scale: 2,
-                                    //       color: Colors.white,
-                                    //     )
-                                    //   ],
-                                    // ),
-                                    const SizedBox(width: 12),
-                                    if (transaction.bills == 'chi') ...[
+                                  ),
+                                  const SizedBox(width: 15),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
                                       Text(
-                                        transaction.category.name,
+                                        formattedTotal,
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            color: transaction.bills == 'thu'
+                                                ? Colors.green
+                                                : Colors.red,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      Text(
+                                        DateFormat('dd/MM/yy hh:mm')
+                                            .format(transaction.date),
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: Theme.of(context)
                                                 .colorScheme
-                                                .onBackground,
-                                            fontWeight: FontWeight.w500),
+                                                .outline,
+                                            fontWeight: FontWeight.w400),
                                       ),
                                     ],
-                                  ],
-                                ),
-                                const SizedBox(width: 15),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      formattedTotal,
-                                      style: TextStyle(
-                                          fontSize: 13,
-                                          color: transaction.bills == 'thu'
-                                              ? Colors.green
-                                              : Colors.red,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                    Text(
-                                      DateFormat('dd/MM/yy hh:mm')
-                                          .format(transaction.date),
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .outline,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                  ],
-                                )
-                              ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),
