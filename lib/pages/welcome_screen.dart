@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:quan_ly_doanh_thu/pages/signin/signin_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -32,9 +33,12 @@ class WelcomeScreen extends StatelessWidget {
               const SizedBox(
                 height: 100,
               ),
-              const Text(
-                'Chào mừng trở lại!',
-                style: TextStyle(fontSize: 30, color: Colors.white),
+              Text(
+                'MONEY HI',
+                style: GoogleFonts.pinyonScript(
+                    fontSize: 50,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 30,
@@ -55,12 +59,10 @@ class WelcomeScreen extends StatelessWidget {
                       style: TextButton.styleFrom(
                           backgroundColor: Colors.green,
                           shape: RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.circular(40))),
+                              borderRadius: BorderRadius.circular(40))),
                       child: const Text(
                         'Đăng nhập',
-                        style: TextStyle(
-                            fontSize: 22, color: Colors.white),
+                        style: TextStyle(fontSize: 22, color: Colors.white),
                       )),
                 ),
               ),

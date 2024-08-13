@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quan_ly_doanh_thu/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/components/my_list_tile.dart';
 import 'package:quan_ly_doanh_thu/pages/profile/profile_screen.dart';
@@ -158,7 +159,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 ),
               ],
               MyListTile(
-                icon: CupertinoIcons.cart_fill_badge_plus,
+                icon: FontAwesomeIcons.truckFast,
                 text: 'LỆNH VẬN CHUYỂN',
                 onTap: widget.onShippingOrderTap,
               ),
