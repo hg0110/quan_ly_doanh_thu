@@ -1,4 +1,4 @@
-# quan_ly_doanh_thu
+# MONEY HI
 
 A new Flutter project.
 
