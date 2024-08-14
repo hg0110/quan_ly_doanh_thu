@@ -101,8 +101,7 @@ class _DriverScreenState extends State<DriverScreen> {
                           color: Colors.red,
                           alignment: Alignment.centerRight,
                           padding: const EdgeInsets.only(right: 16.0),
-                          child:
-                              const Icon(Icons.delete, color: Colors.white),
+                          child: const Icon(Icons.delete, color: Colors.white),
                         ),
                         child: Card(
                           surfaceTintColor: Colors.green,
@@ -111,7 +110,9 @@ class _DriverScreenState extends State<DriverScreen> {
                             title: Row(
                               children: [
                                 const Text("Họ tên: "),
-                                Text(driver.name),
+                                Flexible(
+                                    child: Text(driver.name,
+                                        overflow: TextOverflow.ellipsis)),
                               ],
                             ),
                             subtitle: Column(
@@ -120,7 +121,9 @@ class _DriverScreenState extends State<DriverScreen> {
                                 Row(
                                   children: [
                                     const Text("Địa chỉ: "),
-                                    Text(driver.address),
+                                    Flexible(
+                                        child: Text(driver.address,
+                                            overflow: TextOverflow.ellipsis)),
                                   ],
                                 ),
                                 Row(
@@ -132,19 +135,35 @@ class _DriverScreenState extends State<DriverScreen> {
                                 Row(
                                   children: [
                                     const Text("Ghi chú: "),
-                                    Text(driver.note),
+                                    Flexible(
+                                        child: Text(
+                                      driver.note,
+                                      textAlign: TextAlign.justify,
+                                    )),
                                   ],
                                 ),
-                                Text(
-                                  DateFormat('dd/MM/yy hh:mm')
-                                      .format(driver.date),
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .outline,
-                                      fontWeight: FontWeight.w400),
-                                )
+                                // Text(
+                                //   DateFormat('dd/MM/yy hh:mm')
+                                //       .format(driver.date),
+                                //   style: TextStyle(
+                                //       fontSize: 14,
+                                //       color:
+                                //           Theme.of(context).colorScheme.outline,
+                                //       fontWeight: FontWeight.w400),
+                                // ),
+                                Row(
+                                  children: [
+                                    const Text("Trạng thái: "),
+                                    Text(driver.status,
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: driver.status ==
+                                                    'đang hoạt động'
+                                                ? Colors.green
+                                                : Colors.red,
+                                            fontWeight: FontWeight.w400)),
+                                  ],
+                                ),
                               ],
                             ),
                             trailing: Column(
@@ -156,7 +175,7 @@ class _DriverScreenState extends State<DriverScreen> {
                                       icon: const Icon(Icons.edit),
                                       onPressed: () async {
                                         await UpdateDriverScreen(
-                                                context, driver);
+                                            context, driver);
                                         context
                                             .read<GetDriverBloc>()
                                             .add(GetDriver());

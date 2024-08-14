@@ -5,6 +5,7 @@ class CarEntity {
    String name;
    String BKS;
    String note;
+   String status;
    DateTime  date;
 
   CarEntity({
@@ -12,6 +13,7 @@ class CarEntity {
     required this.name,
     required this.BKS,
     required this.note,
+    required this.status,
     required this.date,
   });
 
@@ -21,6 +23,7 @@ class CarEntity {
       'name': name,
       'BKS': BKS,
       'note': note,
+      'status': status,
       'date': date,
     };
   }
@@ -31,6 +34,7 @@ class CarEntity {
       name: doc['name'],
       BKS: doc['BKS'],
       note: doc['note'],
+      status: doc['status'],
       date: (doc['date'] as Timestamp).toDate(),
     );
   }

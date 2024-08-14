@@ -9,7 +9,9 @@ class ShippingOrder {
   String ShippingId;
   String name;
   String note;
+  String status;
   DateTime start_day;
+  DateTime end_day;
   Car car;
   Driver driver;
   MyUser user;
@@ -19,7 +21,9 @@ class ShippingOrder {
     required this.ShippingId,
     required this.name,
     required this.note,
+    required this.status,
     required this.start_day,
+    required this.end_day,
     required this.car,
     required this.driver,
     required this.user,
@@ -30,7 +34,9 @@ class ShippingOrder {
     ShippingId: '',
     name: '',
     note: '',
+    status: '',
     start_day: DateTime.now(),
+    end_day: DateTime.now(),
     car: Car.empty,
     driver: Driver.empty,
     user: MyUser.empty,
@@ -42,7 +48,9 @@ class ShippingOrder {
       ShippingId: ShippingId,
       name: name,
       note: note,
+      status: status,
       start_day: start_day,
+      end_day: end_day,
       car: car,
       driver: driver,
       user: user,
@@ -55,7 +63,9 @@ class ShippingOrder {
       ShippingId: entity.ShippingId,
       name: entity.name,
       note: entity.note,
+      status: entity.status,
       start_day: entity.start_day,
+      end_day: entity.end_day,
       car: entity.car,
       driver: entity.driver,
       user: entity.user,

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/user/signup/signup_screen.dart';
 import 'package:quan_ly_doanh_thu/pages/user/update_user.dart';
 import 'package:user_repository/user_repository.dart';
+
 import 'blocs/delete_user_bloc/delete_user_bloc.dart';
 import 'blocs/get_user_bloc/get_user_bloc.dart';
 import 'blocs/signup_bloc/signup_bloc.dart';
@@ -102,48 +103,57 @@ class _UserScreenState extends State<UserScreen> {
                         surfaceTintColor: Colors.green,
                         shadowColor: Colors.green,
                         child: ListTile(
-                          title: Row(
-                            children: [
-                              const Text("Họ tên: "),
-                              Text(user.name),
-                            ],
+                          title: SizedBox(
+                            width: double.infinity,
+                            child: Row(
+                              children: [
+                                const Text("Họ tên: "),
+                                Flexible(
+                                    child: Text(
+                                  user.name,
+                                  overflow: TextOverflow.ellipsis,
+                                )),
+                              ],
+                            ),
                           ),
                           subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  const Text("Emai: "),
-                                  Text(user.email),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  const Text("Quyền: "),
-                                  Text(user.roles),
-                                ],
-                              ),
-                            ]),
-                            trailing: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Expanded(
-                                  child: SizedBox(
-                                    width: 30,
-                                    child: IconButton(
-                                      icon: const Icon(Icons.edit),
-                                      onPressed: () async {
-                                        await UpdateUserScreen(
-                                            context, user);
-                                        context
-                                            .read<GetUserBloc>()
-                                            .add(GetUser());
-                                      },
-                                    ),
+                                Row(
+                                  children: [
+                                    const Text("Emai: "),
+                                    Flexible(
+                                        child: Text(
+                                      user.email,
+                                      overflow: TextOverflow.ellipsis,
+                                    )),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    const Text("Quyền: "),
+                                    Text(user.roles),
+                                  ],
+                                ),
+                              ]),
+                          trailing: Column(
+                            children: [
+                              Expanded(
+                                child: SizedBox(
+                                  width: 30,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.edit),
+                                    onPressed: () async {
+                                      await UpdateUserScreen(context, user);
+                                      context
+                                          .read<GetUserBloc>()
+                                          .add(GetUser());
+                                    },
                                   ),
                                 ),
-                              ],
+                              ),
+                            ],
                           ),
-
                         ),
                       ),
                     );

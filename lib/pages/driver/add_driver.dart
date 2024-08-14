@@ -72,6 +72,7 @@ Future getAddDriver(BuildContext parentContext) {
                       address: newDriverAddress,
                       phone: newDriverPhone,
                       note: textNoteController.text,
+                      status:'chờ',
                       date: DateTime.now());
                   parentContext.read<CreateDriverBloc>().add(CreateDriver(newDriver));
                   textNameController.clear();

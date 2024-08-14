@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:quan_ly_doanh_thu/pages/service/blocs/create_category_bloc/create_category_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/service/blocs/get_categories_bloc/get_categories_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/service/update_service.dart';
@@ -83,8 +82,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                   );
                 }
                 if (state is GetCategoriesSuccess) {
-                  state.categories
-                      .sort((a, b) => b.date.compareTo(a.date));
+                  state.categories.sort((a, b) => b.date.compareTo(a.date));
                   return ListView.builder(
                     scrollDirection: Axis.vertical,
                     itemCount: state.categories.length,
@@ -115,7 +113,9 @@ class _ServiceScreenState extends State<ServiceScreen> {
                             title: Row(
                               children: [
                                 const Text("Tên Dịch Vụ: "),
-                                Text(category.name),
+                                Flexible(
+                                    child: Text(category.name,
+                                        overflow: TextOverflow.ellipsis)),
                               ],
                             ),
                             subtitle: Column(
@@ -123,25 +123,23 @@ class _ServiceScreenState extends State<ServiceScreen> {
                               children: [
                                 Row(
                                   children: [
-                                    const Text("Số hiệu: "),
-                                    Text(category.note),
+                                    const Text("Ghi chú: "),
+                                    Flexible(
+                                        child: Text(
+                                      category.note,
+                                      textAlign: TextAlign.justify,
+                                    )),
                                   ],
                                 ),
-                                // Row(
-                                //   children: [
-                                //     const Text("Ghi chú: "),
-                                //     Text(category.date),
-                                //   ],
-                                // ),
-                                Text(
-                                  DateFormat('dd/MM/yy hh:mm')
-                                      .format(category.date),
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color:
-                                      Theme.of(context).colorScheme.outline,
-                                      fontWeight: FontWeight.w400),
-                                )
+                                // Text(
+                                //   DateFormat('dd/MM/yy hh:mm')
+                                //       .format(category.date),
+                                //   style: TextStyle(
+                                //       fontSize: 14,
+                                //       color:
+                                //       Theme.of(context).colorScheme.outline,
+                                //       fontWeight: FontWeight.w400),
+                                // )
                               ],
                             ),
                             trailing: Column(
@@ -151,9 +149,12 @@ class _ServiceScreenState extends State<ServiceScreen> {
                                     width: 30,
                                     child: IconButton(
                                       icon: const Icon(Icons.edit),
-                                      onPressed:  ()async{
-                                        await UpdateCategoryScreen(context, category);
-                                        context.read<GetCategoriesBloc>().add(GetCategories());
+                                      onPressed: () async {
+                                        await UpdateCategoryScreen(
+                                            context, category);
+                                        context
+                                            .read<GetCategoriesBloc>()
+                                            .add(GetCategories());
                                       },
                                     ),
                                   ),
@@ -175,15 +176,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () async {
-              // var newCategory =
               await getCategoryCreation(context);
-              // setState(() {
-              //   state.categories.insert(0, newCategory);
-              // });
-              // var newCar = await getAddCar(context);
-              // if (newCar != null) {
-              //   context.read<GetCarBloc>().add(GetCar());
-              // }
             },
             backgroundColor: Theme.of(context).colorScheme.secondary,
             child: const Icon(
@@ -220,7 +213,9 @@ class _ServiceScreenState extends State<ServiceScreen> {
             TextButton(
               child: const Text('Đồng ý'),
               onPressed: () {
-                parentContext.read<DeleteCategoryBloc>().add(DeleteCategory(category.categoryId));
+                parentContext
+                    .read<DeleteCategoryBloc>()
+                    .add(DeleteCategory(category.categoryId));
                 Navigator.of(context).pop();
               },
             ),

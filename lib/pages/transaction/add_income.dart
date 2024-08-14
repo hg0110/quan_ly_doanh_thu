@@ -1,3 +1,4 @@
+import 'package:driver_repository/driver_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -96,23 +97,55 @@ class _AddIncomeState extends State<AddIncome> {
                             : Text(
                                 selectedShippingOrder!.name,
                                 style: const TextStyle(
-                                    color: Colors.green, fontSize: 13),
+                                    color: Colors.green, fontSize: 16),
                               ),
                         isExpanded: true,
                         iconSize: 30.0,
-                        style: const TextStyle(color: Colors.blue),
+                        style: const TextStyle(color: Colors.green,fontSize: 16),
                         value: selectedShippingOrder,
                         // Store the selected  ID
-                        items: state.shippingOrder.map((shippingOrder) {
+                        items: state.shippingOrder
+                            .where((shippingOrder) =>
+                                shippingOrder.status == 'đang hoạt động')
+                            .map((shippingOrder) {
                           return DropdownMenuItem<ShippingOrder>(
                             value: shippingOrder,
-                            child: Row(
-                              children: [
-                                Text(shippingOrder.name),
-                                Text(shippingOrder.customer.name),
-                                Text(shippingOrder.car.BKS),
-                                // Text(shippingOrder.driver.driverId),
-                              ],
+                            child: FittedBox(
+                              child: Row(
+                                children: [
+                                  Column(
+                                    children: [
+                                      const Text('Lệnh',
+                                          style: TextStyle(color: Colors.grey)),
+                                      Text(shippingOrder.name),
+                                    ],
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Column(
+                                    children: [
+                                      const Text('KH',
+                                          style: TextStyle(color: Colors.grey)),
+                                      Text(shippingOrder.customer.name),
+                                    ],
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Column(
+                                    children: [
+                                      const Text('Xe',
+                                          style: TextStyle(color: Colors.grey)),
+                                      Text(shippingOrder.car.BKS),
+                                    ],
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Column(
+                                    children: [
+                                      const Text('Lái xe',
+                                          style: TextStyle(color: Colors.grey)),
+                                      Text(shippingOrder.driver.name),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         }).toList(),
@@ -169,7 +202,25 @@ class _AddIncomeState extends State<AddIncome> {
                         child: isLoading
                             ? const Center(child: CircularProgressIndicator())
                             : TextButton(
-                                onPressed: () {
+                                onPressed: () async {
+                                  final DriverRepo = FirebaseDriverRepo();
+                                  final ShippingOrderRepo =
+                                      FirebaseShippingOrderRepo();
+                                  if (selectedShippingOrder != null) {
+                                    selectedShippingOrder!.status =
+                                        "đã hoàn thành";
+                                    selectedShippingOrder!.car.status = "chờ";
+                                    selectedShippingOrder!.driver.status =
+                                        "chờ";
+                                    selectedShippingOrder!.end_day =
+                                        DateTime.now();
+                                    await ShippingOrderRepo.updateShippingOrder(
+                                        selectedShippingOrder!);
+                                    await ShippingOrderRepo.updateCar(
+                                        selectedShippingOrder!.car);
+                                    await DriverRepo.updateDriver(
+                                        selectedShippingOrder!.driver);
+                                  }
                                   setState(() {
                                     transactions.amount =
                                         int.parse(incomeController.text);

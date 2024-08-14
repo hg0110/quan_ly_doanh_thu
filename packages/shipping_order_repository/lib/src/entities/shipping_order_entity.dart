@@ -9,7 +9,9 @@ class ShippingOrderEntity {
   String ShippingId;
   String name;
   String note;
+  String status;
   DateTime start_day;
+  DateTime end_day;
   Car car;
   Driver driver;
   MyUser user;
@@ -19,7 +21,9 @@ class ShippingOrderEntity {
     required this.ShippingId,
     required this.name,
     required this.note,
+    required this.status,
     required this.start_day,
+    required this.end_day,
     required this.car,
     required this.driver,
     required this.user,
@@ -31,7 +35,9 @@ class ShippingOrderEntity {
       'ShippingId': ShippingId,
       'name': name,
       'note': note,
+      'status': status,
       'start_day': start_day,
+      'end_day': end_day,
       'car': car.toEntity().toDocument(),
       'driver': driver.toEntity().toDocument(),
       'user': user.toEntity().toDocument(),
@@ -44,7 +50,9 @@ class ShippingOrderEntity {
       ShippingId: doc['ShippingId'],
       name: doc['name'],
       note: doc['note'],
+      status: doc['status'],
       start_day: (doc['start_day'] as Timestamp).toDate(),
+      end_day: (doc['end_day'] as Timestamp).toDate(),
       car: Car.fromEntity(CarEntity.fromDocument(doc['car'])),
       driver: Driver.fromEntity(DriverEntity.fromDocument(doc['driver'])),
       user: MyUser.fromEntity(MyUserEntity.fromDocument(doc['user'])),

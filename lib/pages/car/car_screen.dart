@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:quan_ly_doanh_thu/pages/car/add_car.dart';
 import 'package:quan_ly_doanh_thu/pages/car/blocs/create_car_bloc/create_car_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/car/blocs/get_car_bloc/get_car_bloc.dart';
@@ -83,8 +82,7 @@ class _CarScreenState extends State<CarScreen> {
                   );
                 }
                 if (state is GetCarSuccess) {
-                  state.car
-                      .sort((a, b) => b.date.compareTo(a.date));
+                  state.car.sort((a, b) => b.date.compareTo(a.date));
                   return ListView.builder(
                     scrollDirection: Axis.vertical,
                     itemCount: state.car.length,
@@ -115,7 +113,9 @@ class _CarScreenState extends State<CarScreen> {
                             title: Row(
                               children: [
                                 const Text("Tên Xe: "),
-                                Text(car.name),
+                                Flexible(
+                                    child: Text(car.name,
+                                        overflow: TextOverflow.ellipsis)),
                               ],
                             ),
                             subtitle: Column(
@@ -124,24 +124,43 @@ class _CarScreenState extends State<CarScreen> {
                                 Row(
                                   children: [
                                     const Text("Số hiệu: "),
-                                    Text(car.BKS),
+                                    Flexible(
+                                        child: Text(car.BKS,
+                                            overflow: TextOverflow.ellipsis)),
                                   ],
                                 ),
                                 Row(
                                   children: [
                                     const Text("Ghi chú: "),
-                                    Text(car.note),
+                                    Flexible(
+                                        child: Text(
+                                      car.note,
+                                      textAlign: TextAlign.justify,
+                                    )),
                                   ],
                                 ),
-                                Text(
-                                  DateFormat('dd/MM/yy hh:mm')
-                                      .format(car.date),
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color:
-                                      Theme.of(context).colorScheme.outline,
-                                      fontWeight: FontWeight.w400),
-                                )
+                                Row(
+                                  children: [
+                                    const Text("Trạng thái: "),
+                                    Text(car.status,
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color:
+                                                car.status == 'đang hoạt động'
+                                                    ? Colors.green
+                                                    : Colors.red,
+                                            fontWeight: FontWeight.w400)),
+                                  ],
+                                ),
+                                // Text(
+                                //   DateFormat('dd/MM/yy hh:mm')
+                                //       .format(car.date),
+                                //   style: TextStyle(
+                                //       fontSize: 14,
+                                //       color:
+                                //       Theme.of(context).colorScheme.outline,
+                                //       fontWeight: FontWeight.w400),
+                                // )
                               ],
                             ),
                             trailing: Column(
@@ -151,9 +170,11 @@ class _CarScreenState extends State<CarScreen> {
                                     width: 30,
                                     child: IconButton(
                                       icon: const Icon(Icons.edit),
-                                      onPressed:  ()async{
-                                         await UpdateCarScreen(context, car);
-                                        context.read<GetCarBloc>().add(GetCar());
+                                      onPressed: () async {
+                                        await UpdateCarScreen(context, car);
+                                        context
+                                            .read<GetCarBloc>()
+                                            .add(GetCar());
                                       },
                                     ),
                                   ),

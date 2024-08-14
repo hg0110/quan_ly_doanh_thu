@@ -73,7 +73,11 @@ class _ShippingOrderScreenState extends State<ShippingOrderScreen> {
                         title: Row(
                           children: [
                             const Text("Tên Lệnh: "),
-                            Text(shippingOrder.name),
+                            Flexible(
+                                child: Text(
+                              shippingOrder.name,
+                              overflow: TextOverflow.ellipsis,
+                            )),
                           ],
                         ),
                         subtitle: Column(
@@ -82,25 +86,35 @@ class _ShippingOrderScreenState extends State<ShippingOrderScreen> {
                             Row(
                               children: [
                                 const Text("Khách hàng: "),
-                                Text(shippingOrder.customer.name),
+                                Flexible(
+                                    child: Text(shippingOrder.customer.name,
+                                        overflow: TextOverflow.ellipsis)),
                               ],
                             ),
                             Row(
                               children: [
                                 const Text("Lái xe: "),
-                                Text(shippingOrder.driver.name),
+                                Flexible(
+                                    child: Text(shippingOrder.driver.name,
+                                        overflow: TextOverflow.ellipsis)),
                               ],
                             ),
                             Row(
                               children: [
                                 const Text("Xe: "),
-                                Text(shippingOrder.car.BKS),
+                                Flexible(
+                                    child: Text(shippingOrder.car.BKS,
+                                        overflow: TextOverflow.ellipsis)),
                               ],
                             ),
                             Row(
                               children: [
                                 const Text("Ghi chú: "),
-                                Text(shippingOrder.note),
+                                Flexible(
+                                    child: Text(
+                                  shippingOrder.note,
+                                  textAlign: TextAlign.justify,
+                                )),
                               ],
                             ),
                             Row(children: [
@@ -115,6 +129,31 @@ class _ShippingOrderScreenState extends State<ShippingOrderScreen> {
                                     fontWeight: FontWeight.w400),
                               )
                             ]),
+                            Row(children: [
+                              const Text("Ngày hoàn thành: "),
+                              Text(
+                                DateFormat('dd/MM/yy hh:mm')
+                                    .format(shippingOrder.end_day),
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color:
+                                        Theme.of(context).colorScheme.outline,
+                                    fontWeight: FontWeight.w400),
+                              )
+                            ]),
+                            Row(
+                              children: [
+                                const Text("Trạng thái: "),
+                                Text(shippingOrder.status,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: shippingOrder.status ==
+                                                'đang hoạt động'
+                                            ? Colors.green
+                                            : Colors.red,
+                                        fontWeight: FontWeight.w400)),
+                              ],
+                            ),
                           ],
                         ),
                       ),

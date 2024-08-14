@@ -29,6 +29,7 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
   Driver? selectedDriver;
   Customer? selectedCustomer;
   MyUser? user;
+  Car? car;
 
   ShippingOrder shippingOrder = ShippingOrder.empty;
   DateTime selectDate = DateTime.now();
@@ -95,7 +96,7 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                               style: const TextStyle(
                                   color: Colors.green, fontSize: 16),
                               value: selectedDriver,
-                              items: state.driver.map((driver) {
+                              items: state.driver.where((driver) =>driver.status == 'chờ').map((driver) {
                                 return DropdownMenuItem<Driver>(
                                   value: driver,
                                   child: Row(
@@ -125,7 +126,7 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                               style: const TextStyle(
                                   color: Colors.green, fontSize: 16),
                               value: selectedCar,
-                              items: state1.car.map((car) {
+                              items: state1.car.where((car) =>car.status == 'chờ').map((car) {
                                 return DropdownMenuItem<Car>(
                                   value: car,
                                   child: Text(car.BKS),
@@ -232,10 +233,14 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                               onPressed: () async {
                                 final ShippingOrderRepo =
                                     FirebaseShippingOrderRepo();
+                                final DriverRepo =
+                                    FirebaseDriverRepo();
                                 ShippingOrder? existingOrder =
                                     await ShippingOrderRepo
                                         .getShippingOrderByName(
                                             textLenhController.text);
+                                // selectedCar?.status ='đang hoạt động';
+                                // await ShippingOrderRepo.updateCar(selectedCar!.status as Car);
 
                                 if (existingOrder != null) {
                                   // 2. Show a dialog or snackbar indicating duplicate order
@@ -245,6 +250,12 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                                             'Lệnh vận chuyển đã tồn tại!')),
                                   );
                                 } else {
+                                  if(selectedCar != null||selectedDriver !=null ){
+                                    selectedCar!.status = "đang hoạt động";
+                                    selectedDriver!.status = "đang hoạt động";
+                                    await ShippingOrderRepo.updateCar(selectedCar!);
+                                    await DriverRepo.updateDriver(selectedDriver!);
+                                  }
                                   setState(() {
                                     shippingOrder.ShippingId =
                                         const Uuid().v1();
@@ -252,6 +263,7 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                                         textLenhController.text;
                                     shippingOrder.note =
                                         textNoteController.text;
+                                    shippingOrder.status = 'đang hoạt động';
                                     shippingOrder.car =
                                         selectedCar ?? Car.empty;
                                     shippingOrder.driver =

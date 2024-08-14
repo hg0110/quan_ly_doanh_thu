@@ -5,6 +5,7 @@ class Car {
   String name;
   String BKS;
   String note;
+  String status;
   DateTime date;
 
   Car({
@@ -12,6 +13,7 @@ class Car {
     required this.name,
     required this.BKS,
     required this.note,
+    required this.status,
     required this.date,
   });
 
@@ -20,6 +22,7 @@ class Car {
     name: '',
     BKS: '',
     note: '',
+    status: '',
     date: DateTime.now(),
   );
 
@@ -29,6 +32,7 @@ class Car {
       name: name,
       BKS: BKS,
       note: note,
+      status: status,
       date: date,
     );
   }
@@ -39,6 +43,7 @@ class Car {
       name: entity.name,
       BKS: entity.BKS,
       note: entity.note,
+      status: entity.status,
       date: entity.date,
     );
   }

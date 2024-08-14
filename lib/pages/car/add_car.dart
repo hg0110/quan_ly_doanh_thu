@@ -63,6 +63,7 @@ Future getAddCar(BuildContext parentContext) {
                       name: textNameController.text,
                       BKS: newCarBKS,
                       note: textNoteController.text,
+                      status: 'chờ',
                       date: DateTime.now());
                   parentContext.read<CreateCarBloc>().add(CreateCar(newCar));
                   textNameController.clear();

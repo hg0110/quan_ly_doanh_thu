@@ -98,6 +98,20 @@ class FirebaseShippingOrderRepo implements ShippingOrderRepository {
 		}
 	}
 
+
+	@override
+	Future<void> updateShippingOrder(ShippingOrder shippingOrder) async {
+		try {
+			await shippingOrderCollection
+					.doc(shippingOrder.ShippingId)
+					.update(shippingOrder.toEntity().toDocument());
+			return ;
+		} catch (e) {
+			log(e.toString());
+			rethrow;
+		}
+	}
+
 	@override
 	Future<List<ShippingOrder>> getShippingOrder() async {
 		try {

@@ -106,7 +106,9 @@ class _CustomerScreenState extends State<CustomerScreen> {
                           title: Row(
                             children: [
                               const Text("Họ tên: "),
-                              Text(customer.name),
+                              Flexible(
+                                  child: Text(customer.name,
+                                      overflow: TextOverflow.ellipsis)),
                             ],
                           ),
                           subtitle: Column(
@@ -115,7 +117,9 @@ class _CustomerScreenState extends State<CustomerScreen> {
                               Row(
                                 children: [
                                   const Text("Địa chỉ: "),
-                                  Text(customer.address),
+                                  Flexible(
+                                      child: Text(customer.address,
+                                          overflow: TextOverflow.ellipsis)),
                                 ],
                               ),
                               Row(
@@ -127,18 +131,22 @@ class _CustomerScreenState extends State<CustomerScreen> {
                               Row(
                                 children: [
                                   const Text("Ghi chú: "),
-                                  Text(customer.note),
+                                  Flexible(
+                                      child: Text(
+                                    customer.note,
+                                    textAlign: TextAlign.justify,
+                                  )),
                                 ],
                               ),
-                              Text(
-                                DateFormat('dd/MM/yy hh:mm')
-                                    .format(customer.date),
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color:
-                                        Theme.of(context).colorScheme.outline,
-                                    fontWeight: FontWeight.w400),
-                              )
+                              // Text(
+                              //   DateFormat('dd/MM/yy hh:mm')
+                              //       .format(customer.date),
+                              //   style: TextStyle(
+                              //       fontSize: 14,
+                              //       color:
+                              //           Theme.of(context).colorScheme.outline,
+                              //       fontWeight: FontWeight.w400),
+                              // )
                             ],
                           ),
                           trailing: Column(

@@ -6,6 +6,7 @@ class Driver {
   String address;
   String phone;
   String note;
+  String status;
   DateTime date;
 
   Driver({
@@ -14,6 +15,7 @@ class Driver {
     required this.address,
     required this.phone,
     required this.note,
+    required this.status,
     required this.date,
   });
 
@@ -23,6 +25,7 @@ class Driver {
     address: '',
     phone: '',
     note: '',
+    status: '',
     date: DateTime.now(),
   );
 
@@ -33,6 +36,7 @@ class Driver {
       address: address,
       phone: phone,
       note: note,
+      status: status,
       date: date,
     );
   }
@@ -44,6 +48,7 @@ class Driver {
       address: entity.address,
       phone: entity.phone,
       note: entity.note,
+      status: entity.status,
       date: entity.date,
     );
   }

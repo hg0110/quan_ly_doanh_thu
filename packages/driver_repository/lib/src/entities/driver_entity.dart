@@ -6,6 +6,7 @@ class DriverEntity {
    String address;
    String phone;
    String note;
+   String status;
    DateTime date;
 
   DriverEntity({
@@ -14,6 +15,7 @@ class DriverEntity {
     required this.address,
     required this.phone,
     required this.note,
+    required this.status,
     required this.date,
   });
 
@@ -24,6 +26,7 @@ class DriverEntity {
       'address': address,
       'phone': phone,
       'note': note,
+      'status': status,
       'date': date,
     };
   }
@@ -35,6 +38,7 @@ class DriverEntity {
       address: doc['address'],
       phone: doc['phone'],
       note: doc['note'],
+      status: doc['status'],
       date: (doc['date'] as Timestamp).toDate(),
     );
   }
