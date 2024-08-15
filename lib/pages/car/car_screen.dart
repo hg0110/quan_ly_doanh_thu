@@ -24,6 +24,9 @@ class _CarScreenState extends State<CarScreen> {
     car = Car.empty;
     super.initState();
   }
+    void _refreshTransactions() {
+                context.read<GetCarBloc>().add(GetCar());
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -32,15 +35,16 @@ class _CarScreenState extends State<CarScreen> {
           BlocListener<CreateCarBloc, CreateCarState>(
             listener: (context, state) {
               if (state is CreateCarSuccess) {
-                Navigator.pop(context, car);
                 context.read<GetCarBloc>().add(GetCar());
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Thêm Xe thành công!')));
               } else if (state is CreateCarLoading) {
                 setState(() {
                   isLoading = true;
                 });
               } else if (state is CreateCarFailure) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Không thể thêm xe')),
+                  const SnackBar(content: Text('Không thể thêm Xe')),
                 );
                 setState(() {
                   isLoading = false;
@@ -63,148 +67,153 @@ class _CarScreenState extends State<CarScreen> {
             },
           ),
         ],
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.secondary,
-            title: const Text(
-              "Xe",
-              style: TextStyle(color: Colors.white),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _refreshTransactions();
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              title: const Text(
+                "Xe",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
-          ),
-          body: SizedBox(
-            height: MediaQuery.sizeOf(context).height * 0.80,
-            width: MediaQuery.sizeOf(context).width,
-            child: BlocBuilder<GetCarBloc, GetCarState>(
-              builder: (context, state) {
-                if (state is GetCarLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                if (state is GetCarSuccess) {
-                  state.car.sort((a, b) => b.date.compareTo(a.date));
-                  return ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    itemCount: state.car.length,
-                    itemBuilder: (context, index) {
-                      final Car car = state.car[index];
-                      return Dismissible(
-                        key: Key(car.carId),
-                        confirmDismiss: (direction) async {
-                          // Use confirmDismiss
-                          return await _showDeleteConfirmationDialog(
-                              context, car);
-                        },
-                        onDismissed: (direction) {
-                          context
-                              .read<DeleteCarBloc>()
-                              .add(DeleteCar(car.carId));
-                        },
-                        background: Container(
-                          color: Colors.red,
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(right: 16.0),
-                          child: const Icon(Icons.delete, color: Colors.white),
-                        ),
-                        child: Card(
-                          surfaceTintColor: Colors.green,
-                          shadowColor: Colors.green,
-                          child: ListTile(
-                            title: Row(
-                              children: [
-                                const Text("Tên Xe: "),
-                                Flexible(
-                                    child: Text(car.name,
-                                        overflow: TextOverflow.ellipsis)),
-                              ],
-                            ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    const Text("Số hiệu: "),
-                                    Flexible(
-                                        child: Text(car.BKS,
-                                            overflow: TextOverflow.ellipsis)),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    const Text("Ghi chú: "),
-                                    Flexible(
-                                        child: Text(
-                                      car.note,
-                                      textAlign: TextAlign.justify,
-                                    )),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    const Text("Trạng thái: "),
-                                    Text(car.status,
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color:
-                                                car.status == 'đang hoạt động'
-                                                    ? Colors.green
-                                                    : Colors.red,
-                                            fontWeight: FontWeight.w400)),
-                                  ],
-                                ),
-                                // Text(
-                                //   DateFormat('dd/MM/yy hh:mm')
-                                //       .format(car.date),
-                                //   style: TextStyle(
-                                //       fontSize: 14,
-                                //       color:
-                                //       Theme.of(context).colorScheme.outline,
-                                //       fontWeight: FontWeight.w400),
-                                // )
-                              ],
-                            ),
-                            trailing: Column(
-                              children: [
-                                Expanded(
-                                  child: SizedBox(
-                                    width: 30,
-                                    child: IconButton(
-                                      icon: const Icon(Icons.edit),
-                                      onPressed: () async {
-                                        await UpdateCarScreen(context, car);
-                                        context
-                                            .read<GetCarBloc>()
-                                            .add(GetCar());
-                                      },
+            body: SizedBox(
+              height: MediaQuery.sizeOf(context).height * 0.80,
+              width: MediaQuery.sizeOf(context).width,
+              child: BlocBuilder<GetCarBloc, GetCarState>(
+                builder: (context, state) {
+                  if (state is GetCarLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (state is GetCarSuccess) {
+                    state.car.sort((a, b) => b.date.compareTo(a.date));
+                    return ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: state.car.length,
+                      itemBuilder: (context, index) {
+                        final Car car = state.car[index];
+                        return Dismissible(
+                          key: Key(car.carId),
+                          confirmDismiss: (direction) async {
+                            // Use confirmDismiss
+                            return await _showDeleteConfirmationDialog(
+                                context, car);
+                          },
+                          onDismissed: (direction) {
+                            context
+                                .read<DeleteCarBloc>()
+                                .add(DeleteCar(car.carId));
+                          },
+                          background: Container(
+                            color: Colors.red,
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.only(right: 16.0),
+                            child: const Icon(Icons.delete, color: Colors.white),
+                          ),
+                          child: Card(
+                            surfaceTintColor: Colors.green,
+                            shadowColor: Colors.green,
+                            child: ListTile(
+                              title: Row(
+                                children: [
+                                  const Text("Tên Xe: "),
+                                  Flexible(
+                                      child: Text(car.name,
+                                          overflow: TextOverflow.ellipsis)),
+                                ],
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Text("Số hiệu: "),
+                                      Flexible(
+                                          child: Text(car.BKS,
+                                              overflow: TextOverflow.ellipsis)),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Text("Ghi chú: "),
+                                      Flexible(
+                                          child: Text(
+                                        car.note,
+                                        textAlign: TextAlign.justify,
+                                      )),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Text("Trạng thái: "),
+                                      Text(car.status,
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color:
+                                                  car.status == 'đang hoạt động'
+                                                      ? Colors.green
+                                                      : Colors.red,
+                                              fontWeight: FontWeight.w400)),
+                                    ],
+                                  ),
+                                  // Text(
+                                  //   DateFormat('dd/MM/yy hh:mm')
+                                  //       .format(car.date),
+                                  //   style: TextStyle(
+                                  //       fontSize: 14,
+                                  //       color:
+                                  //       Theme.of(context).colorScheme.outline,
+                                  //       fontWeight: FontWeight.w400),
+                                  // )
+                                ],
+                              ),
+                              trailing: Column(
+                                children: [
+                                  Expanded(
+                                    child: SizedBox(
+                                      width: 30,
+                                      child: IconButton(
+                                        icon: const Icon(Icons.edit),
+                                        onPressed: () async {
+                                          await UpdateCarScreen(context, car);
+                                          context
+                                              .read<GetCarBloc>()
+                                              .add(GetCar());
+                                        },
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  );
-                } else {
-                  return const Center(
-                    child: Text("Error"),
-                  );
+                        );
+                      },
+                    );
+                  } else {
+                    return const Center(
+                      child: Text("Error"),
+                    );
+                  }
+                },
+              ),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () async {
+                var newCar = await getAddCar(context);
+                if (newCar != null) {
+                  context.read<GetCarBloc>().add(GetCar());
                 }
               },
-            ),
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () async {
-              var newCar = await getAddCar(context);
-              if (newCar != null) {
-                context.read<GetCarBloc>().add(GetCar());
-              }
-            },
-            backgroundColor: Theme.of(context).colorScheme.secondary,
-            child: const Icon(
-              Icons.add,
-              color: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
             ),
           ),
         ));

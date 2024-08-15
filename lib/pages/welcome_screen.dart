@@ -35,7 +35,7 @@ class WelcomeScreen extends StatelessWidget {
               ),
               Text(
                 'MONEY HI',
-                style: GoogleFonts.pinyonScript(
+                style: GoogleFonts.eduVicWaNtBeginner(
                     fontSize: 50,
                     color: Colors.white,
                     fontWeight: FontWeight.bold),

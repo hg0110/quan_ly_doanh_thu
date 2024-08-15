@@ -16,7 +16,7 @@ class FirebaseTransactionRepo implements TransactionRepository {
 
 
 
-  Future<List<Transactions>> fetchFutureTransactions(String period) async{
+  Future<List<Transactions>> fetchTransactions(String period) async{
     // 1. Fetch all transactions from your data source
     final allTransactions = await getTransaction();
 
@@ -37,7 +37,7 @@ class FirebaseTransactionRepo implements TransactionRepository {
   List<Transactions> _getFutureTransactionsByWeek(
       List<Transactions> transactions, DateTime now) {
     DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    DateTime endOfWeek = startOfWeek.add(const Duration(days:6));
+    DateTime endOfWeek = startOfWeek.add(const Duration(days:7));
     return transactions
         .where((t) => t.date.isAfter(startOfWeek) && t.date.isBefore(endOfWeek))
         .toList();

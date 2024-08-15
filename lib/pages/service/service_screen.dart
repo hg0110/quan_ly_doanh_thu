@@ -32,15 +32,16 @@ class _ServiceScreenState extends State<ServiceScreen> {
           BlocListener<CreateCategoryBloc, CreateCategoryState>(
             listener: (context, state) {
               if (state is CreateCategorySuccess) {
-                Navigator.pop(context, category);
                 context.read<GetCategoriesBloc>().add(GetCategories());
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Thêm Dịch vụ thành công!')));
               } else if (state is CreateCategoryLoading) {
                 setState(() {
                   isLoading = true;
                 });
               } else if (state is CreateCategoryFailure) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Không thể thêm dịch vụ')),
+                  const SnackBar(content: Text('Không thể thêm Dịch vụ')),
                 );
                 setState(() {
                   isLoading = false;

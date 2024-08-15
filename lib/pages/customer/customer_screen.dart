@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:quan_ly_doanh_thu/pages/customer/add_customer.dart';
 import 'package:quan_ly_doanh_thu/pages/customer/blocs/get_customer_bloc/get_customer_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/customer/update_customer.dart';
@@ -34,10 +33,21 @@ class _CustomerScreenState extends State<CustomerScreen> {
           BlocListener<CreateCustomerBloc, CreateCustomerState>(
             listener: (context, state) {
               if (state is CreateCustomerSuccess) {
-                Navigator.pop(context, customer);
+                context
+                    .read<GetCustomerBloc>()
+                    .add(GetCustomer());
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Thêm Khách hàng thành công!')));
               } else if (state is CreateCustomerLoading) {
                 setState(() {
                   isLoading = true;
+                });
+              }else if (state is CreateCustomerFailure) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Không thể thêm Khách hàng')),
+                );
+                setState(() {
+                  isLoading = false;
                 });
               }
             },

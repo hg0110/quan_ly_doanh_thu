@@ -49,6 +49,8 @@ dependencies:
   image_cropper: ^8.0.1
   fl_chart: ^0.68.0
   google_fonts: ^6.2.1
+  collection: ^1.17.1
+
 
   user_repository:
     path: packages/user_repository

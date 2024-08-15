@@ -1,7 +1,6 @@
 import 'package:driver_repository/driver_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:quan_ly_doanh_thu/pages/driver/add_driver.dart';
 import 'package:quan_ly_doanh_thu/pages/driver/blocs/get_driver_bloc/get_driver_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/driver/update_driver.dart';
@@ -33,11 +32,19 @@ class _DriverScreenState extends State<DriverScreen> {
         BlocListener<CreateDriverBloc, CreateDriverState>(
           listener: (context, state) {
             if (state is CreateDriverSuccess) {
-              Navigator.pop(context, driver);
-              context.read<GetDriverBloc>().add(GetDriver()); //
+              context.read<GetDriverBloc>().add(GetDriver());
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Thêm Lái xe thành công!')));
             } else if (state is CreateDriverLoading) {
               setState(() {
                 isLoading = true;
+              });
+            }else if (state is CreateDriverFailure) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Không thể thêm Lái xe')),
+              );
+              setState(() {
+                isLoading = false;
               });
             }
           },

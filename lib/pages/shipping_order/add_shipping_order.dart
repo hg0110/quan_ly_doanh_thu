@@ -96,19 +96,17 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                               style: const TextStyle(
                                   color: Colors.green, fontSize: 16),
                               value: selectedDriver,
-                              items: state.driver.where((driver) =>driver.status == 'chờ').map((driver) {
+                              items: state.driver
+                                  .where((driver) => driver.status == 'chờ')
+                                  .map((driver) {
                                 return DropdownMenuItem<Driver>(
                                   value: driver,
-                                  child: Row(
-                                    children: [
-                                      Text(driver.name),
-                                    ],
-                                  ),
+                                  child: Text(driver.name),
                                 );
                               }).toList(),
-                              onChanged: (Driver? newValue) {
+                              onChanged: (Driver? newValue3) {
                                 setState(() {
-                                  selectedDriver = newValue!;
+                                  selectedDriver = newValue3!;
                                 });
                               },
                             ),
@@ -126,15 +124,17 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                               style: const TextStyle(
                                   color: Colors.green, fontSize: 16),
                               value: selectedCar,
-                              items: state1.car.where((car) =>car.status == 'chờ').map((car) {
+                              items: state1.car
+                                  .where((car) => car.status == 'chờ')
+                                  .map((car) {
                                 return DropdownMenuItem<Car>(
                                   value: car,
                                   child: Text(car.BKS),
                                 );
                               }).toList(),
-                              onChanged: (Car? newValue) {
+                              onChanged: (Car? newValue1) {
                                 setState(() {
-                                  selectedCar = newValue;
+                                  selectedCar = newValue1!;
                                 });
                               },
                             ),
@@ -152,15 +152,16 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                               style: const TextStyle(
                                   color: Colors.green, fontSize: 16),
                               value: selectedCustomer,
+                              // Make sure this is selectedCustomer
                               items: state2.customer.map((customer) {
                                 return DropdownMenuItem<Customer>(
                                   value: customer,
                                   child: Text(customer.name),
                                 );
                               }).toList(),
-                              onChanged: (Customer? newValue) {
+                              onChanged: (Customer? newValue2) {
                                 setState(() {
-                                  selectedCustomer = newValue;
+                                  selectedCustomer = newValue2!;
                                 });
                               },
                             ),
@@ -233,8 +234,7 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                               onPressed: () async {
                                 final ShippingOrderRepo =
                                     FirebaseShippingOrderRepo();
-                                final DriverRepo =
-                                    FirebaseDriverRepo();
+                                final DriverRepo = FirebaseDriverRepo();
                                 ShippingOrder? existingOrder =
                                     await ShippingOrderRepo
                                         .getShippingOrderByName(
@@ -250,11 +250,14 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                                             'Lệnh vận chuyển đã tồn tại!')),
                                   );
                                 } else {
-                                  if(selectedCar != null||selectedDriver !=null ){
+                                  if (selectedCar != null ||
+                                      selectedDriver != null) {
                                     selectedCar!.status = "đang hoạt động";
                                     selectedDriver!.status = "đang hoạt động";
-                                    await ShippingOrderRepo.updateCar(selectedCar!);
-                                    await DriverRepo.updateDriver(selectedDriver!);
+                                    await ShippingOrderRepo.updateCar(
+                                        selectedCar!);
+                                    await DriverRepo.updateDriver(
+                                        selectedDriver!);
                                   }
                                   setState(() {
                                     shippingOrder.ShippingId =

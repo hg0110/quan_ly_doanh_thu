@@ -5,8 +5,8 @@ import 'package:user_repository/user_repository.dart';
 Future<void> UpdateUserScreen(BuildContext context, MyUser user) async {
   final TextEditingController textNameController =
       TextEditingController(text: user.name);
-  final TextEditingController textEmailController =
-      TextEditingController(text: user.email);
+  // final TextEditingController textEmailController =
+  //     TextEditingController(text: user.email);
   String? selectedRole;
 
   await showDialog(

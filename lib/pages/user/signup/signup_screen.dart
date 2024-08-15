@@ -31,308 +31,325 @@ class _SignupscreenState extends State<Signupscreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            height: double.infinity,
-            width: double.infinity,
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(colors: [
-              Color(0xff5ac18e),
-              Color(0xcc5ac18e),
-              Color(0x995ac18e),
-              Color(0x665ac18e),
-            ])),
-            child: const Padding(
-              padding: EdgeInsets.only(top: 60, left: 20),
-              child: Text(
-                'Thêm tài khoản nhân viên!',
-                style: TextStyle(
-                    fontSize: 27,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 200.0),
-            child: Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(40),
-                  topLeft: Radius.circular(40),
+    return BlocProvider(
+      create: (context) => SignUpBloc(userRepository: FirebaseUserRepo()),
+      child: Builder(builder: (context) {
+        return Scaffold(
+          body: Stack(
+            children: [
+              Container(
+                height: double.infinity,
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                    gradient: LinearGradient(colors: [
+                  Color(0xff5ac18e),
+                  Color(0xcc5ac18e),
+                  Color(0x995ac18e),
+                  Color(0x665ac18e),
+                ])),
+                child: const Padding(
+                  padding: EdgeInsets.only(top: 60, left: 20),
+                  child: Text(
+                    'Thêm tài khoản nhân viên!',
+                    style: TextStyle(
+                        fontSize: 27,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
                 ),
-                color: Colors.white,
               ),
-              height: double.infinity,
-              width: double.infinity,
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.only(top: 70),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      child: MyTextField(
-                          controller: emailController,
-                          hintText: 'Email',
-                          obscureText: false,
-                          keyboardType: TextInputType.emailAddress,
-                          prefixIcon: const Icon(CupertinoIcons.mail_solid),
-                          validator: (val) {
-                            if (val!.isEmpty) {
-                              return 'Vui lòng điền vào trường này';
-                            } else if (!RegExp(
-                                    r'^[\w-\.]+@([\w-]+.)+[\w-]{2,4}$')
-                                .hasMatch(val)) {
-                              return 'Vui lòng nhập email hợp lệ';
-                            }
-                            return null;
-                          }),
+              Padding(
+                padding: const EdgeInsets.only(top: 200.0),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(40),
+                      topLeft: Radius.circular(40),
                     ),
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      child: MyTextField(
-                          controller: passwordController,
-                          hintText: 'Password',
-                          obscureText: obscurePassword,
-                          keyboardType: TextInputType.visiblePassword,
-                          prefixIcon: const Icon(CupertinoIcons.lock_fill),
-                          onChanged: (val) {
-                            if (val!.contains(RegExp(r'[A-Z]'))) {
-                              setState(() {
-                                containsUpperCase = true;
-                              });
-                            } else {
-                              setState(() {
-                                containsUpperCase = false;
-                              });
-                            }
-                            if (val.contains(RegExp(r'[a-z]'))) {
-                              setState(() {
-                                containsLowerCase = true;
-                              });
-                            } else {
-                              setState(() {
-                                containsLowerCase = false;
-                              });
-                            }
-                            if (val.contains(RegExp(r'[0-9]'))) {
-                              setState(() {
-                                containsNumber = true;
-                              });
-                            } else {
-                              setState(() {
-                                containsNumber = false;
-                              });
-                            }
-                            if (val.contains(RegExp(
-                                r'^(?=.*?[!@#$&*~`)\%\-(_+=;:,.<>/?"[{\]}\|^])'))) {
-                              setState(() {
-                                containsSpecialChar = true;
-                              });
-                            } else {
-                              setState(() {
-                                containsSpecialChar = false;
-                              });
-                            }
-                            if (val.length >= 8) {
-                              setState(() {
-                                contains8Length = true;
-                              });
-                            } else {
-                              setState(() {
-                                contains8Length = false;
-                              });
-                            }
-                            return null;
-                          },
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                obscurePassword = !obscurePassword;
-                                if (obscurePassword) {
-                                  iconPassword = CupertinoIcons.eye_fill;
-                                } else {
-                                  iconPassword = CupertinoIcons.eye_slash_fill;
-                                }
-                              });
-                            },
-                            icon: Icon(iconPassword),
-                          ),
-                          validator: (val) {
-                            if (val!.isEmpty) {
-                              return 'Vui lòng điền vào trường này';
-                            } else if (!RegExp(
-                                    r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~`)\%\-(_+=;:,.<>/?"[{\]}\|^]).{8,}$')
-                                .hasMatch(val)) {
-                              return 'Vui lòng nhập mật khẩu hợp lệ';
-                            }
-                            return null;
-                          }),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    color: Colors.white,
+                  ),
+                  height: double.infinity,
+                  width: double.infinity,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.only(top: 70),
+                    child: Column(
                       children: [
-                        Column(
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: MyTextField(
+                              controller: emailController,
+                              hintText: 'Email',
+                              obscureText: false,
+                              keyboardType: TextInputType.emailAddress,
+                              prefixIcon: const Icon(CupertinoIcons.mail_solid),
+                              validator: (val) {
+                                if (val!.isEmpty) {
+                                  return 'Vui lòng điền vào trường này';
+                                } else if (!RegExp(
+                                        r'^[\w-\.]+@([\w-]+.)+[\w-]{2,4}$')
+                                    .hasMatch(val)) {
+                                  return 'Vui lòng nhập email hợp lệ';
+                                }
+                                return null;
+                              }),
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: MyTextField(
+                              controller: passwordController,
+                              hintText: 'Password',
+                              obscureText: obscurePassword,
+                              keyboardType: TextInputType.visiblePassword,
+                              prefixIcon: const Icon(CupertinoIcons.lock_fill),
+                              onChanged: (val) {
+                                if (val!.contains(RegExp(r'[A-Z]'))) {
+                                  setState(() {
+                                    containsUpperCase = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    containsUpperCase = false;
+                                  });
+                                }
+                                if (val.contains(RegExp(r'[a-z]'))) {
+                                  setState(() {
+                                    containsLowerCase = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    containsLowerCase = false;
+                                  });
+                                }
+                                if (val.contains(RegExp(r'[0-9]'))) {
+                                  setState(() {
+                                    containsNumber = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    containsNumber = false;
+                                  });
+                                }
+                                if (val.contains(RegExp(
+                                    r'^(?=.*?[!@#$&*~`)\%\-(_+=;:,.<>/?"[{\]}\|^])'))) {
+                                  setState(() {
+                                    containsSpecialChar = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    containsSpecialChar = false;
+                                  });
+                                }
+                                if (val.length >= 8) {
+                                  setState(() {
+                                    contains8Length = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    contains8Length = false;
+                                  });
+                                }
+                                return null;
+                              },
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    obscurePassword = !obscurePassword;
+                                    if (obscurePassword) {
+                                      iconPassword = CupertinoIcons.eye_fill;
+                                    } else {
+                                      iconPassword =
+                                          CupertinoIcons.eye_slash_fill;
+                                    }
+                                  });
+                                },
+                                icon: Icon(iconPassword),
+                              ),
+                              validator: (val) {
+                                if (val!.isEmpty) {
+                                  return 'Vui lòng điền vào trường này';
+                                } else if (!RegExp(
+                                        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~`)\%\-(_+=;:,.<>/?"[{\]}\|^]).{8,}$')
+                                    .hasMatch(val)) {
+                                  return 'Vui lòng nhập mật khẩu hợp lệ';
+                                }
+                                return null;
+                              }),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "⚈  1 chữ in hoa",
-                              style: TextStyle(
-                                  color: containsUpperCase
-                                      ? Colors.green
-                                      : Theme.of(context)
-                                          .colorScheme
-                                          .onBackground),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "⚈  1 chữ in hoa",
+                                  style: TextStyle(
+                                      color: containsUpperCase
+                                          ? Colors.green
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .onBackground),
+                                ),
+                                Text(
+                                  "⚈  1 chữ thường",
+                                  style: TextStyle(
+                                      color: containsLowerCase
+                                          ? Colors.green
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .onBackground),
+                                ),
+                                Text(
+                                  "⚈  1 số",
+                                  style: TextStyle(
+                                      color: containsNumber
+                                          ? Colors.green
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .onBackground),
+                                ),
+                              ],
                             ),
-                            Text(
-                              "⚈  1 chữ thường",
-                              style: TextStyle(
-                                  color: containsLowerCase
-                                      ? Colors.green
-                                      : Theme.of(context)
-                                          .colorScheme
-                                          .onBackground),
-                            ),
-                            Text(
-                              "⚈  1 số",
-                              style: TextStyle(
-                                  color: containsNumber
-                                      ? Colors.green
-                                      : Theme.of(context)
-                                          .colorScheme
-                                          .onBackground),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "⚈  1 ký tự đặc biệt",
+                                  style: TextStyle(
+                                      color: containsSpecialChar
+                                          ? Colors.green
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .onBackground),
+                                ),
+                                Text(
+                                  "⚈  8 ký tự tối thiểu",
+                                  style: TextStyle(
+                                      color: contains8Length
+                                          ? Colors.green
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .onBackground),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "⚈  1 ký tự đặc biệt",
-                              style: TextStyle(
-                                  color: containsSpecialChar
-                                      ? Colors.green
-                                      : Theme.of(context)
-                                          .colorScheme
-                                          .onBackground),
-                            ),
-                            Text(
-                              "⚈  8 ký tự tối thiểu",
-                              style: TextStyle(
-                                  color: contains8Length
-                                      ? Colors.green
-                                      : Theme.of(context)
-                                          .colorScheme
-                                          .onBackground),
-                            ),
-                          ],
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: MyTextField(
+                              controller: nameController,
+                              hintText: 'Họ tên',
+                              obscureText: false,
+                              keyboardType: TextInputType.name,
+                              prefixIcon:
+                                  const Icon(CupertinoIcons.person_fill),
+                              validator: (val) {
+                                if (val!.isEmpty) {
+                                  return 'Vui lòng điền vào trường này';
+                                } else if (val.length > 30) {
+                                  return 'Tên quá dài';
+                                }
+                                return null;
+                              }),
                         ),
+                        const SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: DropdownButton(
+                            hint: selectedRole == null
+                                ? const Text('Chọn quyền')
+                                : Text(
+                                    selectedRole!,
+                                    style: const TextStyle(color: Colors.green),
+                                  ),
+                            isExpanded: true,
+                            iconSize: 35.0,
+                            style: const TextStyle(color: Colors.blue),
+                            items: ['admin', 'user'].map(
+                              (val) {
+                                return DropdownMenuItem<String>(
+                                  value: val,
+                                  child: Text(val),
+                                );
+                              },
+                            ).toList(),
+                            onChanged: (val) {
+                              setState(
+                                () {
+                                  selectedRole = val;
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02),
+                        BlocBuilder<SignUpBloc, SignUpState>(
+                          // Use BlocBuilder
+                          builder: (context, state) {
+                            if (state is SignUpProcess) {
+                              return const CircularProgressIndicator();
+                            } else {
+                              return SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.5,
+                                child: TextButton(
+                                    onPressed: () {
+                                      // if (_formKey.currentState!.validate()) {
+                                      MyUser myUser = MyUser.empty;
+                                      myUser = myUser.copyWith(
+                                          email: emailController.text,
+                                          name: nameController.text,
+                                          roles: selectedRole,
+                                          date: DateTime.now());
+                                      setState(() {
+                                        context.read<SignUpBloc>().add(
+                                            SignUpRequired(myUser,
+                                                passwordController.text));
+                                      });
+                                      Navigator.of(context).pop();
+                                      // }
+                                    },
+                                    style: TextButton.styleFrom(
+                                        elevation: 3.0,
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        foregroundColor: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(60))),
+                                    child: const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 25, vertical: 5),
+                                      child: Text(
+                                        "Đăng ký",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    )),
+                              );
+                            }
+                          },
+                        )
+                        // : const CircularProgressIndicator()
                       ],
                     ),
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      child: MyTextField(
-                          controller: nameController,
-                          hintText: 'Họ tên',
-                          obscureText: false,
-                          keyboardType: TextInputType.name,
-                          prefixIcon: const Icon(CupertinoIcons.person_fill),
-                          validator: (val) {
-                            if (val!.isEmpty) {
-                              return 'Vui lòng điền vào trường này';
-                            } else if (val.length > 30) {
-                              return 'Tên quá dài';
-                            }
-                            return null;
-                          }),
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: DropdownButton(
-                        hint: selectedRole == null
-                            ? const Text('Chọn quyền')
-                            : Text(
-                                selectedRole!,
-                                style: const TextStyle(color: Colors.green),
-                              ),
-                        isExpanded: true,
-                        iconSize: 35.0,
-                        style: const TextStyle(color: Colors.blue),
-                        items: ['admin', 'user'].map(
-                          (val) {
-                            return DropdownMenuItem<String>(
-                              value: val,
-                              child: Text(val),
-                            );
-                          },
-                        ).toList(),
-                        onChanged: (val) {
-                          setState(
-                            () {
-                              selectedRole = val;
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                    !signUpRequired
-                        ? SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            child: TextButton(
-                                onPressed: () {
-                                  // if (_formKey.currentState!.validate()) {
-                                  MyUser myUser = MyUser.empty;
-                                  myUser = myUser.copyWith(
-                                      email: emailController.text,
-                                      name: nameController.text,
-                                      roles: selectedRole,
-                                      date: DateTime.now());
-                                  setState(() {
-                                    context.read<SignUpBloc>().add(
-                                        SignUpRequired(
-                                            myUser, passwordController.text));
-                                  });
-                                  Navigator.of(context).pop();
-                                  // }
-                                },
-                                style: TextButton.styleFrom(
-                                    elevation: 3.0,
-                                    backgroundColor:
-                                        Theme.of(context).colorScheme.secondary,
-                                    foregroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(60))),
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 25, vertical: 5),
-                                  child: Text(
-                                    "Đăng ký",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                )),
-                          )
-                        : const CircularProgressIndicator()
-                  ],
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      }),
     );
   }
 }

@@ -38,7 +38,9 @@ class _ShippingOrderScreenState extends State<ShippingOrderScreen> {
     return BlocListener<CreateShippingOrderBloc, CreateShippingOrderState>(
         listener: (context, state) {
           if (state is CreateShippingOrderSuccess) {
-            Navigator.pop(context, shippingOrder);
+            context
+                .read<GetShippingOrderBloc>()
+                .add(GetShippingOrder());
           } else if (state is CreateShippingOrderLoading) {
             setState(() {
               isLoading = true;

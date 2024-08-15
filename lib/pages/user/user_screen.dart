@@ -33,11 +33,19 @@ class _UserScreenState extends State<UserScreen> {
           BlocListener<SignUpBloc, SignUpState>(
             listener: (context, state) {
               if (state is SignUpSuccess) {
-                Navigator.pop(context, user);
                 context.read<GetUserBloc>().add(GetUser());
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Thêm Nhân viên thành công!')));
               } else if (state is SignUpProcess) {
                 setState(() {
                   isLoading = true;
+                });
+              }else if (state is SignUpFailure) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Không thể thêm Nhân viên')),
+                );
+                setState(() {
+                  isLoading = false;
                 });
               }
             },

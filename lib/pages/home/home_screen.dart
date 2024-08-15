@@ -4,6 +4,7 @@ import 'package:driver_repository/driver_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:quan_ly_doanh_thu/pages/car/blocs/get_car_bloc/get_car_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/common_screen.dart';
 import 'package:quan_ly_doanh_thu/pages/customer/customer_screen.dart';
@@ -224,9 +225,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // return BlocBuilder<GetTransactionBloc, GetTransactionState>(
-    //     builder: (context, state) {
-    //   if (state is GetTransactionSuccess) {
     return BlocListener<CreateTransactionBloc, CreateTransactionState>(
       // BlocListener inside MultiBlocProvider
       listener: (context, state) {
@@ -239,9 +237,12 @@ class _HomeScreenState extends State<HomeScreen> {
         if (state is GetTransactionSuccess) {
           return Scaffold(
               appBar: AppBar(
-                title: const Text(
-                  'Doanh thu',
-                  style: TextStyle(color: Colors.white),
+                title: Text(
+                  'MONEY HI',
+                  style: GoogleFonts.eduVicWaNtBeginner(
+                    // fontStyle: FontStyle.italic,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
                 ),
                 backgroundColor: Colors.green,
                 leading: Builder(
