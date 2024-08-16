@@ -26,7 +26,9 @@ class _StatScreenState extends State<StatScreen> {
     if (mounted) {
       transactions =
           await _transactionRepository.fetchTransactions(selectedPeriod!);
-      setState(() {});
+      setState(() {
+
+      });
     }
   }
 

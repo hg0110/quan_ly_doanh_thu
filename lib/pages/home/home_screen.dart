@@ -240,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: Text(
                   'MONEY HI',
                   style: GoogleFonts.eduVicWaNtBeginner(
-                    // fontStyle: FontStyle.italic,
+                      fontStyle: FontStyle.italic,
                       color: Colors.white,
                       fontWeight: FontWeight.bold),
                 ),

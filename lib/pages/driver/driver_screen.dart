@@ -39,7 +39,7 @@ class _DriverScreenState extends State<DriverScreen> {
               setState(() {
                 isLoading = true;
               });
-            }else if (state is CreateDriverFailure) {
+            } else if (state is CreateDriverFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Không thể thêm Lái xe')),
               );
@@ -96,8 +96,17 @@ class _DriverScreenState extends State<DriverScreen> {
                       return Dismissible(
                         key: Key(driver.driverId),
                         confirmDismiss: (direction) async {
+                          if (driver.status == 'đang hoạt động') {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content:
+                                      Text('Không thể xóa lái xe đang hoạt động')),
+                            );
+                            return false; // Prevent dismissal
+                          } else {
                           return await _showDeleteConfirmationDialog(
                               context, driver);
+                          }
                         },
                         onDismissed: (direction) {
                           context

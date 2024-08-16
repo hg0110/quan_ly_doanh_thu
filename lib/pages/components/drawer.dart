@@ -54,6 +54,7 @@ class _MyDrawerState extends State<MyDrawer> {
               BlocBuilder<MyUserBloc, MyUserState>(
                 builder: (context, state) {
                   if (state.status == MyUserStatus.success) {
+                    final users = state.user!;
                     return Padding(
                       padding: const EdgeInsets.all(50.0),
                       child: Column(
@@ -65,7 +66,7 @@ class _MyDrawerState extends State<MyDrawer> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => ProfilePage(
-                                                user: MyUser.empty)));
+                                                user: users)));
                                     // final ImagePicker picker = ImagePicker();
                                     // final XFile? image = await picker.pickImage(
                                     //     source: ImageSource.gallery,

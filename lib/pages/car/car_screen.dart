@@ -24,9 +24,10 @@ class _CarScreenState extends State<CarScreen> {
     car = Car.empty;
     super.initState();
   }
-    void _refreshTransactions() {
-                context.read<GetCarBloc>().add(GetCar());
-    }
+
+  void _refreshTransactions() {
+    context.read<GetCarBloc>().add(GetCar());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,9 +100,17 @@ class _CarScreenState extends State<CarScreen> {
                         return Dismissible(
                           key: Key(car.carId),
                           confirmDismiss: (direction) async {
-                            // Use confirmDismiss
-                            return await _showDeleteConfirmationDialog(
-                                context, car);
+                            if (car.status == 'đang hoạt động') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'Không thể xóa xe đang hoạt động')),
+                              );
+                              return false; // Prevent dismissal
+                            } else {
+                              return await _showDeleteConfirmationDialog(
+                                  context, car);
+                            }
                           },
                           onDismissed: (direction) {
                             context
@@ -112,7 +121,8 @@ class _CarScreenState extends State<CarScreen> {
                             color: Colors.red,
                             alignment: Alignment.centerRight,
                             padding: const EdgeInsets.only(right: 16.0),
-                            child: const Icon(Icons.delete, color: Colors.white),
+                            child:
+                                const Icon(Icons.delete, color: Colors.white),
                           ),
                           child: Card(
                             surfaceTintColor: Colors.green,

@@ -74,6 +74,7 @@ class _AddTransactionState extends State<AddTransaction> {
                                 child: TextFormField(
                                   controller: expenseController,
                                   textAlignVertical: TextAlignVertical.center,
+                                  maxLength: 19,
                                   decoration: InputDecoration(
                                     filled: true,
                                     fillColor: Colors.white,
@@ -86,6 +87,7 @@ class _AddTransactionState extends State<AddTransaction> {
                                       borderRadius: BorderRadius.circular(30),
                                       // borderSide: BorderSide.none
                                     ),
+                                    counterText: '',
                                   ),
                                 ),
                               ),

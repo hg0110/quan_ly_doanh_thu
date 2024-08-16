@@ -60,6 +60,7 @@ class _AddIncomeState extends State<AddIncome> {
                       child: TextFormField(
                         controller: incomeController,
                         textAlignVertical: TextAlignVertical.center,
+                        maxLength: 19,
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.white,

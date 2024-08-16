@@ -2,6 +2,7 @@ import 'package:driver_repository/driver_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:quan_ly_doanh_thu/pages/shipping_order/shipping_order_detail.dart';
 import 'package:shipping_order_repository/shipping_order_repository.dart';
 import 'package:transaction_repository/transaction_repository.dart';
 
@@ -68,95 +69,105 @@ class _ShippingOrderScreenState extends State<ShippingOrderScreen> {
                   itemCount: state.shippingOrder.length,
                   itemBuilder: (context, index) {
                     final shippingOrder = state.shippingOrder[index];
-                    return Card(
-                      surfaceTintColor: Colors.green,
-                      shadowColor: Colors.green,
-                      child: ListTile(
-                        title: Row(
-                          children: [
-                            const Text("Tên Lệnh: "),
-                            Flexible(
-                                child: Text(
-                              shippingOrder.name,
-                              overflow: TextOverflow.ellipsis,
-                            )),
-                          ],
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                const Text("Khách hàng: "),
-                                Flexible(
-                                    child: Text(shippingOrder.customer.name,
-                                        overflow: TextOverflow.ellipsis)),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Text("Lái xe: "),
-                                Flexible(
-                                    child: Text(shippingOrder.driver.name,
-                                        overflow: TextOverflow.ellipsis)),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Text("Xe: "),
-                                Flexible(
-                                    child: Text(shippingOrder.car.BKS,
-                                        overflow: TextOverflow.ellipsis)),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Text("Ghi chú: "),
-                                Flexible(
-                                    child: Text(
-                                  shippingOrder.note,
-                                  textAlign: TextAlign.justify,
-                                )),
-                              ],
-                            ),
-                            Row(children: [
-                              const Text("Ngày bắt đầu: "),
-                              Text(
-                                DateFormat('dd/MM/yy hh:mm')
-                                    .format(shippingOrder.start_day),
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color:
-                                        Theme.of(context).colorScheme.outline,
-                                    fontWeight: FontWeight.w400),
-                              )
-                            ]),
-                            Row(children: [
-                              const Text("Ngày hoàn thành: "),
-                              Text(
-                                DateFormat('dd/MM/yy hh:mm')
-                                    .format(shippingOrder.end_day),
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color:
-                                        Theme.of(context).colorScheme.outline,
-                                    fontWeight: FontWeight.w400),
-                              )
-                            ]),
-                            Row(
-                              children: [
-                                const Text("Trạng thái: "),
-                                Text(shippingOrder.status,
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        color: shippingOrder.status ==
-                                                'đang hoạt động'
-                                            ? Colors.green
-                                            : Colors.red,
-                                        fontWeight: FontWeight.w400)),
-                              ],
-                            ),
-                          ],
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ShippingOrderDetail(shippingOrder: shippingOrder,),
+                            ));
+                      },
+                      child: Card(
+                        surfaceTintColor: Colors.green,
+                        shadowColor: Colors.green,
+                        child: ListTile(
+                          title: Row(
+                            children: [
+                              const Text("Tên Lệnh: "),
+                              Flexible(
+                                  child: Text(
+                                shippingOrder.name,
+                                overflow: TextOverflow.ellipsis,
+                              )),
+                            ],
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  const Text("Khách hàng: "),
+                                  Flexible(
+                                      child: Text(shippingOrder.customer.name,
+                                          overflow: TextOverflow.ellipsis)),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  const Text("Lái xe: "),
+                                  Flexible(
+                                      child: Text(shippingOrder.driver.name,
+                                          overflow: TextOverflow.ellipsis)),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  const Text("Xe: "),
+                                  Flexible(
+                                      child: Text(shippingOrder.car.BKS,
+                                          overflow: TextOverflow.ellipsis)),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  const Text("Ghi chú: "),
+                                  Flexible(
+                                      child: Text(
+                                    shippingOrder.note,
+                                    textAlign: TextAlign.justify,
+                                  )),
+                                ],
+                              ),
+                              Row(children: [
+                                const Text("Ngày bắt đầu: "),
+                                Text(
+                                  DateFormat('dd/MM/yy hh:mm')
+                                      .format(shippingOrder.start_day),
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color:
+                                          Theme.of(context).colorScheme.outline,
+                                      fontWeight: FontWeight.w400),
+                                )
+                              ]),
+                              Row(children: [
+                                const Text("Ngày hoàn thành: "),
+                                Text(
+                                  DateFormat('dd/MM/yy hh:mm')
+                                      .format(shippingOrder.end_day),
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color:
+                                          Theme.of(context).colorScheme.outline,
+                                      fontWeight: FontWeight.w400),
+                                )
+                              ]),
+                              Row(
+                                children: [
+                                  const Text("Trạng thái: "),
+                                  Text(shippingOrder.status,
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: shippingOrder.status ==
+                                                  'đang hoạt động'
+                                              ? Colors.green
+                                              : Colors.red,
+                                          fontWeight: FontWeight.w400)),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );

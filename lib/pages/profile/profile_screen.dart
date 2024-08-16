@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:user_repository/user_repository.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -21,9 +22,9 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     user = widget.user; // Initialize user from constructor
-    textNameController = TextEditingController(text: user.name);
-    textEmailController = TextEditingController(text: user.email);
-    textRoleController = TextEditingController(text: user.roles);
+    textNameController = TextEditingController(text: widget.user.name);
+    textEmailController = TextEditingController(text: widget.user.email);
+    textRoleController = TextEditingController(text: widget.user.roles);
     super.initState();
   }
 
@@ -53,14 +54,14 @@ class _ProfilePageState extends State<ProfilePage> {
               Color(0x995ac18e),
               Color(0x665ac18e),
             ])),
-            child: const Padding(
-              padding: EdgeInsets.only(top: 60, left: 20),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 60, left: 20),
               child: Text(
-                'Xin chào \n!',
-                style: TextStyle(
+                'Xin Chào!',
+                style: GoogleFonts.eduVicWaNtBeginner(
                     fontSize: 27,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -77,8 +78,10 @@ class _ProfilePageState extends State<ProfilePage> {
               height: double.infinity,
               width: double.infinity,
               child: SingleChildScrollView(
-                padding: const EdgeInsets.only(top: 70),
+                padding: const EdgeInsets.only(
+                    top: 70, left: 15, right: 15, bottom: 15),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.9,
@@ -87,37 +90,46 @@ class _ProfilePageState extends State<ProfilePage> {
                       controller: textNameController,
                       decoration: const InputDecoration(hintText: "Họ tên"),
                     ),
-                    TextField(
-                      controller: textEmailController,
-                      decoration: const InputDecoration(hintText: "Email"),
-                    ),
-                    TextField(
-                      controller: textRoleController,
-                      decoration: const InputDecoration(hintText: "Quyền"),
-                    ),
+                    // TextField(
+                    //   controller: textEmailController,
+                    //   decoration: const InputDecoration(hintText: "Email"),
+                    // ),
+                    // TextField(
+                    //   controller: textRoleController,
+                    //   decoration: const InputDecoration(hintText: "Quyền"),
+                    // ),
+                    const SizedBox(height: 15),
+                    Text('Email: ${widget.user.email}',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 15),
+                    Text('Quyền: ${widget.user.roles}',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                     // TextField(
                     //   controller: textNoteController,
                     //   decoration: const InputDecoration(hintText: "Note"),
                     // ),
 
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Update user data
-                        setState(() {
-                          user = user.copyWith(
-                            name: textNameController.text,
-                            email: textEmailController.text,
-                            // roles: textPhoneController.text,
+                    const SizedBox(height: 15),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Update user data
+                          setState(() {
+                            user = user.copyWith(
+                              name: textNameController.text,
+                              // email: textEmailController.text,
+                              // roles: textPhoneController.text,
+                            );
+                          });
+                          // You would typically call a function here to update the user data in your repository (e.g., database or API)
+                          // Example: userRepository.updateUser(user);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Đã cập nhật thông tin!')),
                           );
-                        });
-                        // You would typically call a function here to update the user data in your repository (e.g., database or API)
-                        // Example: userRepository.updateUser(user);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Profile updated')),
-                        );
-                      },
-                      child: const Text('Update'),
+                        },
+                        child: const Text('Lưu'),
+                      ),
                     ),
                   ],
                 ),
