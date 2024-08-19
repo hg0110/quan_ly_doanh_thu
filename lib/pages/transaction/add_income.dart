@@ -200,7 +200,7 @@ class _AddIncomeState extends State<AddIncome> {
                                   selectedShippingOrder!.car.status = "chờ";
                                   selectedShippingOrder!.driver.status = "chờ";
                                   selectedShippingOrder!.end_day =
-                                      DateTime.now();
+                                     transactions.date;
                                   await ShippingOrderRepo.updateShippingOrder(
                                       selectedShippingOrder!);
                                   await ShippingOrderRepo.updateCar(

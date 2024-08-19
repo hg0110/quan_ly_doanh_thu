@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:user_repository/user_repository.dart';
 
+import '../../app.dart';
+
 class ProfilePage extends StatefulWidget {
   final MyUser user;
 
@@ -112,18 +114,27 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(height: 15),
                     Center(
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async{
                           // Update user data
-                          setState(() {
-                            user = user.copyWith(
-                              name: textNameController.text,
-                              // email: textEmailController.text,
-                              // roles: textPhoneController.text,
+                          final newUserName = textNameController.text;
+                          if (newUserName.isEmpty ) {
+                            // Show an error message (e.g., usinga SnackBar or Dialog)
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Vui lòng điền đầy đủ thông tin!')),
                             );
-                          });
+                          } else {
+                            user.name = newUserName;
+                            // user.roles = selectedRole!;
+                            user.date = DateTime.now();
+
+                            // Update driver in Firebase
+                            await userRepository.updateUser(user);
+                            Navigator.of(context).pop(); // Close the dialog
+                          }
                           // You would typically call a function here to update the user data in your repository (e.g., database or API)
                           // Example: userRepository.updateUser(user);
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          await ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                                 content: Text('Đã cập nhật thông tin!')),
                           );

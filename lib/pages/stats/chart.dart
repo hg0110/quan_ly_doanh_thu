@@ -1,4 +1,3 @@
-
 import 'dart:core';
 
 import 'package:collection/collection.dart';
@@ -7,36 +6,26 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:transaction_repository/transaction_repository.dart';
 
-class MyChart extends StatefulWidget {
+class Chart extends StatefulWidget {
   final List<Transactions> transactions;
-  final String? period;
-
-  const MyChart({super.key, required this.transactions, required this.period});
+  final String? period;const Chart({super.key, required this.transactions, this.period});
 
   @override
-  State<MyChart> createState() => _MyChartState();
+  State<Chart> createState() => _ChartState();
 }
 
-class _MyChartState extends State<MyChart> {
-  // Map<int, double> _calculateProfitData() {
-  //   // Always return monthly data
-  //   return _calculateProfitByMonth();
-  // }
-
-  Map<int, double> _calculateProfitByMonth(
-      List<Transactions> currentWeekTransactions) {
+class _ChartState extends State<Chart> {
+  Map<int, double> _calculateProfitByMonth(List<Transactions> transactions) {
     Map<int, double> profitByMonth = {};
-
-    // Initialize profit for all 12 months to 0
     for (int month = 1; month <= 12; month++) {
-      profitByMonth[month - 2] = 0;
+      profitByMonth[month] = 0;
     }
 
-    // Calculate profit for months with data
     final transactionsByMonth = groupBy(
         widget.transactions,
-        (transaction) =>
+            (transaction) =>
             DateTime(transaction.date.year, transaction.date.month));
+
     transactionsByMonth.forEach((month, transactions) {
       double revenue = transactions
           .where((transaction) => transaction.bills == 'thu')
@@ -53,54 +42,81 @@ class _MyChartState extends State<MyChart> {
   }
 
   Map<int, double> _calculateProfitByDayOfWeek(
-      List<Transactions> currentWeekTransactions) {
-    Map<int, double> revenueByDayOfWeek = {};
-    Map<int, double> expensesByDayOfWeek = {};
+      List<Transactions> transactions) {
+    Map<int, double> profitByDayOfWeek = {};
+
+    for (int day = 0; day < 6; day++) {
+      profitByDayOfWeek[day] = 0;
+    }
 
     for (var transaction in widget.transactions) {
-      int dayOfWeek = transaction.date.weekday;
+      int dayOfWeek = transaction.date.weekday - 1;
       double amount = transaction.amount.toDouble();
 
       if (transaction.bills == 'thu') {
-        revenueByDayOfWeek.update(dayOfWeek, (value) => value + amount,
+        profitByDayOfWeek.update(dayOfWeek, (value) => value + amount,
             ifAbsent: () => amount);
       } else if (transaction.bills == 'chi') {
-        expensesByDayOfWeek.update(dayOfWeek, (value) => value + amount,
-            ifAbsent: () => amount);
+        profitByDayOfWeek.update(dayOfWeek, (value) => value - amount,
+            ifAbsent: () => -amount);
       }
-    }
-
-    Map<int, double> profitByDayOfWeek = {};
-    for (int i = 1; i <= 7; i++) {
-      double revenue = revenueByDayOfWeek[i - 1] ?? 0;
-      double expenses = expensesByDayOfWeek[i - 1] ?? 0;
-      profitByDayOfWeek[i] = revenue - expenses;
     }
 
     return profitByDayOfWeek;
   }
 
   @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
+    if (widget.period == 'week') {
+      return _buildChart(
+          _calculateProfitByDayOfWeek(widget.transactions), 'week');
+    } else {
+      return _buildChart(_calculateProfitByMonth(widget.transactions), 'month');
+    }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    Map<int, double> profitData = _calculateProfitData();
-    Map<int, Map<int, double>> nestedProfitData = {};
-    profitData.forEach((month, profit) {
-      nestedProfitData[month] = {1: profit}; // Assuming dayOfWeek is always 1
-    });
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const SizedBox(height: 80),
-          SizedBox(
-            height: 400,
-            child: BarChart(_barChartData(nestedProfitData)),
+  Widget _buildChart(Map<int, double> profitData, String period) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 400,
+          child: BarChart(
+            BarChartData(
+              alignment: BarChartAlignment.spaceAround,
+              titlesData: FlTitlesData(
+                show: true,
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: (value, meta) =>
+                        _getBottomTitles(value, meta, period),
+                    reservedSize: 50,
+                  ),
+                ),
+                leftTitles: const AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: false,
+                    reservedSize: 50,
+                  ),
+                ),
+                topTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                rightTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+              ),
+              borderData: FlBorderData(
+                show: true,
+                border: const Border(bottom: BorderSide(color: Colors.black)),
+              ),
+              barGroups: _getBarGroups(profitData, period),
+              gridData: const FlGridData(show: false),
+            ),
           ),
+        ),
+        const SizedBox(height: 20),
+        if (period == 'month')
           FittedBox(
             child: Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 30),
@@ -118,8 +134,7 @@ class _MyChartState extends State<MyChart> {
               ),
             ),
           ),
-        ],
-      ),
+      ],
     );
   }
 
@@ -141,77 +156,22 @@ class _MyChartState extends State<MyChart> {
     return _calculateTotalRevenue() - _calculateTotalExpenses();
   }
 
-  BarChartData _barChartData(Map<int, Map<int, double>> profitData) {
-    return BarChartData(
-      alignment: BarChartAlignment.spaceAround,
-      titlesData: FlTitlesData(
-        show: true,
-        bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            getTitlesWidget: _getBottomTitles,
-            reservedSize: 50,
-          ),
-        ),
-        leftTitles: const AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: false,
-            reservedSize: 50,
-          ),
-        ),
-        topTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-        rightTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-      ),
-      borderData: FlBorderData(
-        show: true,
-        border: const Border(bottom: BorderSide(color: Colors.black)),
-      ),
-      barGroups: _getBarGroups(profitData),
-      gridData: const FlGridData(show: false),
-    );
-  }
-
   List<BarChartGroupData> _getBarGroups(
-      Map<int, Map<int, double>> profitByMonthAndDayOfWeek) {
+      Map<int, double> profitData, String period) {
     List<BarChartGroupData> barGroups = [];
 
-    profitByMonthAndDayOfWeek.forEach((month, profitByDayOfWeek) {
-      List<BarChartRodData> rods = [];
-
-      for (int dayOfWeek = 1; dayOfWeek <= 7; dayOfWeek++) {
-        double profit = profitByDayOfWeek[dayOfWeek] ?? 0;
-        rods.add(
-          BarChartRodData(
-            toY: profit,
-            width: 15,
-            color: profit >= 0 ? Colors.green : Colors.red,
-            gradient: LinearGradient(
-              colors: profit >= 0
-                  ? [
-                      Theme.of(context).colorScheme.secondary,
-                      Theme.of(context).colorScheme.tertiary,
-                      Theme.of(context).colorScheme.primary,
-                    ]
-                  : [
-                      Colors.red.shade400,
-                      Colors.red.shade800,
-                    ],
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-            ),
-          ),
-        );
-      }
-
+    profitData.forEach((index, profit) {
       barGroups.add(
         BarChartGroupData(
-          x: month,
-          barsSpace: 4,
-          barRods: rods,
+          x: index,
+          barRods: [
+            BarChartRodData(
+              toY: profit,
+              width: 20,
+              color: profit >= 0 ? Colors.green : Colors.red,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ],
         ),
       );
     });
@@ -219,31 +179,43 @@ class _MyChartState extends State<MyChart> {
     return barGroups;
   }
 
-  Map<int, double> _calculateProfitData() {
-    if (widget.period == 'week') {
-      return _calculateProfitByDayOfWeek(widget.transactions);
-    } else {
-      return _calculateProfitByMonth(widget.transactions);
-    }
-  }
-
-  Widget _getBottomTitles(double value, TitleMeta meta) {
+  Widget _getBottomTitles(double value, TitleMeta meta, String period) {
     const style = TextStyle(
       color: Colors.grey,
       fontWeight: FontWeight.bold,
-      fontSize: 13,
+      fontSize: 14,
     );
 
     Widget text;
-    if (widget.period == 'week') {
-      // Display day of the week
-      int dayIndex = value.toInt() + 3;
-      String day = DateFormat.E().format(
-          DateTime.fromMillisecondsSinceEpoch(0).add(Duration(days: dayIndex)));
-      text = Text(day, style: style);
+    if (period == 'week') {
+      switch (value.toInt()) {
+        case 0:
+          text = const Text('T2', style: style);
+          break;
+        case 1:
+          text = const Text('T3', style: style);
+          break;
+        case 2:
+          text = const Text('T4', style: style);
+          break;
+        case 3:
+          text = const Text('T5', style: style);
+          break;
+        case 4:
+          text = const Text('T6', style: style);
+          break;
+        case 5:
+          text = const Text('T7', style: style);
+          break;
+        case 6:
+          text = const Text('CN', style: style);
+          break;
+        default:
+          text = const Text('', style: style);
+          break;
+      }
     } else {
-      // Display month name
-      int monthIndex = value.toInt() + 2;
+      int monthIndex = value.toInt();
       String month = DateFormat.MMM().format(DateTime(0, monthIndex));
       text = Text(month, style: style);
     }

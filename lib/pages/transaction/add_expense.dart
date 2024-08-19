@@ -87,7 +87,6 @@ class _AddTransactionState extends State<AddTransaction> {
                                       borderRadius: BorderRadius.circular(30),
                                       // borderSide: BorderSide.none
                                     ),
-                                    counterText: '',
                                   ),
                                 ),
                               ),

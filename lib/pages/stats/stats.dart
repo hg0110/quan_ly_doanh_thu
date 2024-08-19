@@ -12,23 +12,28 @@ class StatScreen extends StatefulWidget {
 }
 
 class _StatScreenState extends State<StatScreen> {
-  String? selectedPeriod;
+  String? selectedPeriod = 'week';
   final _transactionRepository = FirebaseTransactionRepo();
   List<Transactions> transactions = [];
 
   @override
   void initState() {
     super.initState();
-    // _fetchData();
+    _fetchData();
   }
 
-  Future<void> _fetchData() async {
+  Future<void> _fetchData() async{
     if (mounted) {
-      transactions =
-          await _transactionRepository.fetchTransactions(selectedPeriod!);
-      setState(() {
-
-      });
+      final fetchedData =
+      await _transactionRepository.fetchTransactions(selectedPeriod!);
+      if (selectedPeriod == 'week') {
+        // Weekly data
+        transactions = fetchedData as List<Transactions>;
+      } else {
+        // Monthly data
+        transactions = fetchedData.values.expand((e) => e).toList();
+      }
+      setState(() {});
     }
   }
 
@@ -58,7 +63,7 @@ class _StatScreenState extends State<StatScreen> {
             ],
             onChanged: (value) {
               setState(() {
-                selectedPeriod = value;
+                selectedPeriod = value!;
                 _fetchData();
               });
             },
@@ -66,10 +71,13 @@ class _StatScreenState extends State<StatScreen> {
           Expanded(
             child: transactions.isEmpty
                 ? const Center(child: CircularProgressIndicator())
-                : MyChart(
-                    period: selectedPeriod,
-                    transactions: transactions,
-                  ),
+                :  Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Chart(
+                      period: selectedPeriod,
+                      transactions: transactions,
+                    ),
+                ),
           ),
         ],
       ),

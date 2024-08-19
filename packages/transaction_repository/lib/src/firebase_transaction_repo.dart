@@ -16,40 +16,43 @@ class FirebaseTransactionRepo implements TransactionRepository {
 
 
 
-  Future<List<Transactions>> fetchTransactions(String period) async{
+  Future<Map<int, List<Transactions>>> fetchTransactions(String period) async {
     // 1. Fetch all transactions from your data source
     final allTransactions = await getTransaction();
 
     // 2. Filter transactions based on the period
-    final now = DateTime.now();
     switch (period) {
       case 'week':
-        return _getFutureTransactionsByWeek(allTransactions, now);
+        return {0: _getTransactionsByWeek(allTransactions)};
       case 'month':
-        return _getFutureTransactionsByMonth(allTransactions, now);
-      case 'year':
-        return _getFutureTransactionsByYear(allTransactions, now);
+        return getTransactionsByMonthOfYear(allTransactions);
       default:
-        return allTransactions;
+        return {0: allTransactions};
     }
   }
 
-  List<Transactions> _getFutureTransactionsByWeek(
-      List<Transactions> transactions, DateTime now) {
-    DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    DateTime endOfWeek = startOfWeek.add(const Duration(days:7));
+  List<Transactions> _getTransactionsByWeek(List<Transactions> transactions) {
+    final now = DateTime.now();
+    DateTime startOfWeek = now.subtract(Duration(days: now.weekday -1));
+    DateTime endOfWeek = startOfWeek.add(const Duration(days: 7));
     return transactions
         .where((t) => t.date.isAfter(startOfWeek) && t.date.isBefore(endOfWeek))
         .toList();
   }
 
-  List<Transactions> _getFutureTransactionsByMonth(
-      List<Transactions> transactions, DateTime now) {
-    DateTime startOfMonth = DateTime(now.year, now.month);
-    DateTime endOfMonth = DateTime(now.year, now.month + 1).subtract(const Duration(days: 1));
-    return transactions
-        .where((t) => t.date.isAfter(startOfMonth) && t.date.isBefore(endOfMonth))
-        .toList();
+  Map<int, List<Transactions>> getTransactionsByMonthOfYear(List<Transactions> transactions) {
+    final now = DateTime.now();
+    final currentYear = now.year;
+
+    Map<int, List<Transactions>> transactionsByMonth = {};
+
+    for (int month = 1; month <= 12; month++) {
+      transactionsByMonth[month] = transactions
+          .where((transaction) =>transaction.date.month == month && transaction.date.year == currentYear)
+          .toList();
+    }
+
+    return transactionsByMonth;
   }
 
   List<Transactions> _getFutureTransactionsByYear(

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quan_ly_doanh_thu/pages/signin/forgot_pw.dart';
 
 import '../components/my_text_field.dart';
 import 'bloc/signin_bloc/signin_bloc.dart';
@@ -34,8 +35,13 @@ class _LoginscreenState extends State<Loginscreen> {
   Widget build(BuildContext context) {
     return BlocListener<SignInBloc, SignInState>(
       bloc: _bloc,
-      listener: (context, state) {
+      listener: (context, state) async{
         if (state is SignInSuccess) {
+             await ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text('Đăng nhập thành công!'))
+            );
+             Navigator.pop(context);
           setState(() {
             signInRequired = true;
           });
@@ -44,6 +50,10 @@ class _LoginscreenState extends State<Loginscreen> {
             signInRequired = true;
           });
         } else if (state is SignInFailure) {
+            await ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text('Email hoặc mật khẩu không hợp lệ!')),
+            );
           setState(() {
             signInRequired = false;
             _errorMsg = 'Email hoặc mật khẩu không hợp lệ!';
@@ -175,11 +185,11 @@ class _LoginscreenState extends State<Loginscreen> {
                         const SizedBox(height: 20),
                         TextButton(
                           onPressed: () {
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) =>
-                            //             const Signupscreen()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ForgotPasswordScreen()));
                           },
                           child: const Padding(
                             padding: EdgeInsets.only(right: 30.0),
@@ -198,7 +208,7 @@ class _LoginscreenState extends State<Loginscreen> {
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.5,
                             child: TextButton(
-                                onPressed: () {
+                                onPressed: () async{
                                   if (_formKey.currentState!.validate()) {
                                     // if (selectedRole != null) {
                                     _bloc.add(SignInRequired(
@@ -206,7 +216,11 @@ class _LoginscreenState extends State<Loginscreen> {
                                       passwordController.text,
                                     ));
                                   }
-                                  Navigator.pop(context);
+                                  // Navigator.pop(context);
+                                  // await ScaffoldMessenger.of(context).showSnackBar(
+                                  //   const SnackBar(
+                                  //       content: Text('Đăng nhập thành công!')),
+                                  // );
                                 },
                                 style: TextButton.styleFrom(
                                     elevation: 3.0,
