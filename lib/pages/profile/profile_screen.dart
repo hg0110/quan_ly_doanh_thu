@@ -102,10 +102,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     // ),
                     const SizedBox(height: 15),
                     Text('Email: ${widget.user.email}',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 15),
                     Text('Quyền: ${widget.user.roles}',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
                     // TextField(
                     //   controller: textNoteController,
                     //   decoration: const InputDecoration(hintText: "Note"),

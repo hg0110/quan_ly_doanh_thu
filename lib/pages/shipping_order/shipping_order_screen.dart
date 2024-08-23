@@ -5,10 +5,13 @@ import 'package:intl/intl.dart';
 import 'package:quan_ly_doanh_thu/pages/shipping_order/shipping_order_detail.dart';
 import 'package:shipping_order_repository/shipping_order_repository.dart';
 import 'package:transaction_repository/transaction_repository.dart';
+import 'package:user_repository/user_repository.dart';
 
+import '../../blocs/my_user_bloc/my_user_bloc.dart';
 import '../car/blocs/get_car_bloc/get_car_bloc.dart';
 import '../customer/blocs/get_customer_bloc/get_customer_bloc.dart';
 import '../driver/blocs/get_driver_bloc/get_driver_bloc.dart';
+import '../user/blocs/get_user_bloc/get_user_bloc.dart';
 import 'add_shipping_order.dart';
 import 'blocs/create_shipping_order_bloc/create_shipping_order_bloc.dart';
 import 'blocs/get_shipping_order_bloc/get_shipping_order_bloc.dart';
@@ -84,41 +87,44 @@ class _ShippingOrderScreenState extends State<ShippingOrderScreen> {
                         child: ListTile(
                           title: Row(
                             children: [
-                              const Text("Tên Lệnh: "),
+                              const Text("Tên Lệnh: ",style:
+                              const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                               Flexible(
                                   child: Text(
                                 shippingOrder.name,
                                 overflow: TextOverflow.ellipsis,
+                                      style:
+                                      const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
                               )),
                             ],
                           ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                children: [
-                                  const Text("Khách hàng: "),
-                                  Flexible(
-                                      child: Text(shippingOrder.customer.name,
-                                          overflow: TextOverflow.ellipsis)),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  const Text("Lái xe: "),
-                                  Flexible(
-                                      child: Text(shippingOrder.driver.name,
-                                          overflow: TextOverflow.ellipsis)),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  const Text("Xe: "),
-                                  Flexible(
-                                      child: Text(shippingOrder.car.BKS,
-                                          overflow: TextOverflow.ellipsis)),
-                                ],
-                              ),
+                              // Row(
+                              //   children: [
+                              //     const Text("Khách hàng: "),
+                              //     Flexible(
+                              //         child: Text(shippingOrder.customer.name,
+                              //             overflow: TextOverflow.ellipsis)),
+                              //   ],
+                              // ),
+                              // Row(
+                              //   children: [
+                              //     const Text("Lái xe: "),
+                              //     Flexible(
+                              //         child: Text(shippingOrder.driver.name,
+                              //             overflow: TextOverflow.ellipsis)),
+                              //   ],
+                              // ),
+                              // Row(
+                              //   children: [
+                              //     const Text("Xe: "),
+                              //     Flexible(
+                              //         child: Text(shippingOrder.car.BKS,
+                              //             overflow: TextOverflow.ellipsis)),
+                              //   ],
+                              // ),
                               Row(
                                 children: [
                                   const Text("Ghi chú: "),
@@ -205,6 +211,11 @@ class _ShippingOrderScreenState extends State<ShippingOrderScreen> {
                               create: (context) =>
                                   GetCarBloc(FirebaseShippingOrderRepo())
                                     ..add(GetCar()),
+                            ),
+                            BlocProvider(
+                              create: (context) =>
+                              MyUserBloc(myUserRepository: FirebaseUserRepo())
+                                ..add( GetMyUser(myUserId: '')),
                             ),
                           ],
                           child: const AddShippingOrder(

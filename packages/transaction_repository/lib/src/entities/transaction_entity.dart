@@ -12,7 +12,7 @@ class TransactionEntity {
   DateTime date;
   int amount;
   String bills;
-  final bool isRevenue;
+  // final bool isRevenue;
 
   TransactionEntity({
     required this.transactionId,
@@ -22,7 +22,7 @@ class TransactionEntity {
     required this.date,
     required this.amount,
     required this.bills,
-    required this.isRevenue,
+    // required this.isRevenue,
   });
 
   Map<String, Object?> toDocument() {
@@ -34,7 +34,7 @@ class TransactionEntity {
       'date': date,
       'amount': amount,
       'bills': bills,
-      'isRevenue': true,
+      // 'isRevenue': true,
     };
   }
 
@@ -49,7 +49,7 @@ class TransactionEntity {
       date: (doc['date'] as Timestamp).toDate(),
       amount: doc['amount'],
       bills: doc['bills'],
-      isRevenue: doc['isRevenue'],
+      // isRevenue: doc['isRevenue'],
     );
   }
 }

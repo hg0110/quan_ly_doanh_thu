@@ -105,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.pop(context);
     Navigator.push(
       context,
-      MaterialPageRoute<Expense>(
+      MaterialPageRoute(
         builder: (BuildContext context) => MultiBlocProvider(
           providers: [
             BlocProvider(

@@ -10,7 +10,7 @@ class Transactions {
   DateTime date;
   int amount;
   String bills;
-  final bool isRevenue;
+  // final bool isRevenue;
 
   Transactions({
     required this.transactionId,
@@ -20,7 +20,7 @@ class Transactions {
     required this.date,
     required this.amount,
     required this.bills,
-    required this.isRevenue,
+    // required this.isRevenue,
   });
 
   static final empty = Transactions(
@@ -31,7 +31,7 @@ class Transactions {
     date: DateTime.now(),
     amount: 0,
     bills: '',
-    isRevenue: true,
+    // isRevenue: true,
   );
 
   TransactionEntity toEntity() {
@@ -43,7 +43,7 @@ class Transactions {
       date: date,
       amount: amount,
       bills: bills,
-      isRevenue: isRevenue,
+      // isRevenue: isRevenue,
     );
   }
 
@@ -56,7 +56,7 @@ class Transactions {
       date: entity.date,
       amount: entity.amount,
       bills: entity.bills,
-      isRevenue: entity.isRevenue,
+      // isRevenue: entity.isRevenue,
     );
   }
 }

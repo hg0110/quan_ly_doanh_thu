@@ -22,12 +22,12 @@ class TransactionScreen extends StatefulWidget {
 }
 
 class _TransactionScreenState extends State<TransactionScreen> {
-  late Expense expense;
+  // late Expense expense;
   bool isLoading = false;
 
   @override
   void initState() {
-    expense = Expense.empty;
+    // expense = Expense.empty;
     super.initState();
   }
 

@@ -10,8 +10,8 @@ class FirebaseTransactionRepo implements TransactionRepository {
       FirebaseFirestore.instance.collection('transactions');
   final categoryCollection =
       FirebaseFirestore.instance.collection('categories');
-  final expenseCollection = FirebaseFirestore.instance.collection('expenses');
-  final incomeCollection = FirebaseFirestore.instance.collection('incomes');
+  // final expenseCollection = FirebaseFirestore.instance.collection('expenses');
+  // final incomeCollection = FirebaseFirestore.instance.collection('incomes');
   final customerCollection = FirebaseFirestore.instance.collection('customers');
 
 
@@ -163,54 +163,54 @@ class FirebaseTransactionRepo implements TransactionRepository {
       return null; // Deletion failed
     }
   }
-
-  @override
-  Future<void> createExpense(Expense expense) async {
-    try {
-      await expenseCollection
-          .doc(expense.expenseId)
-          .set(expense.toEntity().toDocument());
-    } catch (e) {
-      log(e.toString());
-      rethrow;
-    }
-  }
-
-  @override
-  Future<List<Expense>> getExpenses() async {
-    try {
-      return await expenseCollection.get().then((value) => value.docs
-          .map((e) => Expense.fromEntity(ExpenseEntity.fromDocument(e.data())))
-          .toList());
-    } catch (e) {
-      log(e.toString());
-      rethrow;
-    }
-  }
-
-  @override
-  Future<void> createIncome(Income income) async {
-    try {
-      await incomeCollection
-          .doc(income.incomeId)
-          .set(income.toEntity().toDocument());
-    } catch (e) {
-      log(e.toString());
-      rethrow;
-    }
-  }
-
-  @override
-  Future<List<Income>> getIncomes() async {
-    try {
-      return await incomeCollection.get().then((value) => value.docs
-          .map((e) => Income.fromEntity(IncomeEntity.fromDocument(e.data())))
-          .toList());
-    } catch (e) {
-      log(e.toString());
-      rethrow;
-    }
-  }
+  //
+  // @override
+  // Future<void> createExpense(Expense expense) async {
+  //   try {
+  //     await expenseCollection
+  //         .doc(expense.expenseId)
+  //         .set(expense.toEntity().toDocument());
+  //   } catch (e) {
+  //     log(e.toString());
+  //     rethrow;
+  //   }
+  // }
+  //
+  // @override
+  // Future<List<Expense>> getExpenses() async {
+  //   try {
+  //     return await expenseCollection.get().then((value) => value.docs
+  //         .map((e) => Expense.fromEntity(ExpenseEntity.fromDocument(e.data())))
+  //         .toList());
+  //   } catch (e) {
+  //     log(e.toString());
+  //     rethrow;
+  //   }
+  // }
+  //
+  // @override
+  // Future<void> createIncome(Income income) async {
+  //   try {
+  //     await incomeCollection
+  //         .doc(income.incomeId)
+  //         .set(income.toEntity().toDocument());
+  //   } catch (e) {
+  //     log(e.toString());
+  //     rethrow;
+  //   }
+  // }
+  //
+  // @override
+  // Future<List<Income>> getIncomes() async {
+  //   try {
+  //     return await incomeCollection.get().then((value) => value.docs
+  //         .map((e) => Income.fromEntity(IncomeEntity.fromDocument(e.data())))
+  //         .toList());
+  //   } catch (e) {
+  //     log(e.toString());
+  //     rethrow;
+  //   }
+  // }
 
 
 

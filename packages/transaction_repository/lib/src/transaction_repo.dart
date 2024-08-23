@@ -16,13 +16,13 @@ abstract class TransactionRepository {
 
   Future<void> deleteCategory(String categoryId);
 
-  Future<void> createExpense(Expense expense);
-
-  Future<List<Expense>> getExpenses();
-
-  Future<void> createIncome(Income income);
-
-  Future<List<Income>> getIncomes();
+  // Future<void> createExpense(Expense expense);
+  //
+  // Future<List<Expense>> getExpenses();
+  //
+  // Future<void> createIncome(Income income);
+  //
+  // Future<List<Income>> getIncomes();
 
 	Future<void> createCustomer(Customer customer);
 
