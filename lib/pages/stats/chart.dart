@@ -45,7 +45,7 @@ class _ChartState extends State<Chart> {
       List<Transactions> transactions) {
     Map<int, double> profitByDayOfWeek = {};
 
-    for (int day = 0; day < 6; day++) {
+    for (int day = 0; day < 7; day++) {
       profitByDayOfWeek[day] = 0;
     }
 

@@ -248,9 +248,15 @@ class _AddTransactionState extends State<AddTransaction> {
                                         child: CircularProgressIndicator())
                                     : TextButton(
                                         onPressed: () async {
+                                          final expense = int.tryParse(expenseController.text);if (expense == null || expense <= 0) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(content: Text('Giá trị chi không hợp lệ. Vui lòng nhập số tiền lớn hơn 0.')),
+                                            );
+                                            return; // Dừng xử lý nếu giá trị không hợp lệ
+                                          }// Dừng xử lý nếu giá trị không hợp lệ
+
                                           setState(() {
-                                            transactions.amount = int.parse(
-                                                expenseController.text);
+                                            transactions.amount = expense;
                                             transactions.car =
                                                 selectedCar ?? Car.empty;
                                             transactions.bills = 'chi';

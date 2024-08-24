@@ -33,9 +33,9 @@ class _AddIncomeState extends State<AddIncome> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context1) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context1).colorScheme.background,
       body: BlocBuilder<GetShippingOrderBloc, GetShippingOrderState>(
         builder: (context, state) {
           if (state is GetShippingOrderSuccess) {
@@ -208,9 +208,17 @@ class _AddIncomeState extends State<AddIncome> {
                                   await DriverRepo.updateDriver(
                                       selectedShippingOrder!.driver);
                                 }
+                                final income = int.tryParse(incomeController.text);if (income == null || income <= 0) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Giá trị thu nhập không hợp lệ. Vui lòng nhập số tiền lớn hơn 0.')),
+                                  );
+                                  return; // Dừng xử lý nếu giá trị không hợp lệ
+                                }// Dừng xử lý nếu giá trị không hợp lệ
+
+
                                 setState(() {
                                   transactions.amount =
-                                      int.parse(incomeController.text);
+                                      income;
                                   transactions.shippingOrder =
                                       selectedShippingOrder ??
                                           ShippingOrder.empty;
