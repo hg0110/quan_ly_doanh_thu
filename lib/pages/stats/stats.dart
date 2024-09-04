@@ -68,6 +68,7 @@ class _StatScreenState extends State<StatScreen> {
               });
             },
           ),
+          const SizedBox(height: 50,),
           Expanded(
             child: transactions.isEmpty
                 ? const Center(child: CircularProgressIndicator())

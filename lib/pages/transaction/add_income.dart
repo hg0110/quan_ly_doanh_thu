@@ -200,7 +200,7 @@ class _AddIncomeState extends State<AddIncome> {
                                   selectedShippingOrder!.car.status = "chờ";
                                   selectedShippingOrder!.driver.status = "chờ";
                                   selectedShippingOrder!.end_day =
-                                     transactions.date;
+                                      transactions.date;
                                   await ShippingOrderRepo.updateShippingOrder(
                                       selectedShippingOrder!);
                                   await ShippingOrderRepo.updateCar(
@@ -208,17 +208,19 @@ class _AddIncomeState extends State<AddIncome> {
                                   await DriverRepo.updateDriver(
                                       selectedShippingOrder!.driver);
                                 }
-                                final income = int.tryParse(incomeController.text);if (income == null || income <= 0) {
+                                final income =
+                                    int.tryParse(incomeController.text);
+                                if (income == null || income <= 0) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Giá trị thu nhập không hợp lệ. Vui lòng nhập số tiền lớn hơn 0.')),
+                                    const SnackBar(
+                                        content: Text(
+                                            'Giá trị thu nhập không hợp lệ. Vui lòng nhập số tiền lớn hơn 0.')),
                                   );
                                   return; // Dừng xử lý nếu giá trị không hợp lệ
-                                }// Dừng xử lý nếu giá trị không hợp lệ
-
+                                } // Dừng xử lý nếu giá trị không hợp lệ
 
                                 setState(() {
-                                  transactions.amount =
-                                      income;
+                                  transactions.amount = income;
                                   transactions.shippingOrder =
                                       selectedShippingOrder ??
                                           ShippingOrder.empty;

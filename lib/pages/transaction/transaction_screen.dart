@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:quan_ly_doanh_thu/pages/car/blocs/get_car_bloc/get_car_bloc.dart';
+import 'package:quan_ly_doanh_thu/pages/transaction/dateRangePicker.dart';
 import 'package:quan_ly_doanh_thu/pages/transaction/transaction.dart';
 import 'package:quan_ly_doanh_thu/pages/transaction/transaction_detail.dart';
 import 'package:shipping_order_repository/shipping_order_repository.dart';
@@ -22,13 +24,139 @@ class TransactionScreen extends StatefulWidget {
 }
 
 class _TransactionScreenState extends State<TransactionScreen> {
-  // late Expense expense;
   bool isLoading = false;
 
   @override
   void initState() {
-    // expense = Expense.empty;
     super.initState();
+  }
+
+  void _showFilterDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Lọc giao dịch'),
+        content: _buildFilterContent(context),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Đóng'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterContent(BuildContext context) {
+    final state = context.read<GetTransactionBloc>().state;
+    final state1 = context.read<GetCarBloc>().state;
+    if (state is! GetTransactionSuccess || state1 is! GetCarSuccess) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final transactions = state.transaction;
+    // final car1 = state1.car;
+    final cars =
+        transactions.map((t) => t.shippingOrder.car.BKS).toSet().toList();
+    final cars1 =
+        transactions.map((t) => t.car.BKS).toSet().toList();
+    // final cars1 = car1.map((t) => t.BKS).toSet().toList();
+    // final uniqueBKS = <String>{}; // Add this line
+    // final filteredCars = cars.where((car) => uniqueBKS.add(car.BKS)).toList(); // Add this line
+    DateTimeRange? selectedDateRange;
+    String? selectedCarId;
+    String? selectedBills;
+
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DropdownButtonFormField<String>(
+              decoration: const InputDecoration(labelText: 'Loại giao dịch'),
+              value: selectedBills,
+              items: const [
+                DropdownMenuItem(value: 'thu', child: Text('Thu')),
+                DropdownMenuItem(value: 'chi', child: Text('Chi')),
+              ],
+              onChanged: (bills) => setState(() => selectedBills = bills),
+            ),
+            const SizedBox(height: 16),
+            if (selectedBills == 'thu') ...[
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(labelText: 'Chọn xe'),
+                value: selectedCarId,
+                items: cars.map((car) {
+                  // Change cars to filteredCars
+                  return DropdownMenuItem(
+                    value: car,
+                    child: Text(car),
+                  );
+                }).toList(),
+                onChanged: (BKS) => setState(() => selectedCarId = BKS),
+              ),
+            ],
+            const SizedBox(height: 16),
+            if (selectedBills == 'chi') ...[
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(labelText: 'Chọn xe'),
+                value: selectedCarId,
+                items: cars1.map((car) {
+                  // Change cars to filteredCars
+                  return DropdownMenuItem(
+                    value: car,
+                    child: Text(car),
+                  );
+                }).toList(),
+                onChanged: (BKS) => setState(() => selectedCarId = BKS),
+              ),
+            ],
+            const SizedBox(height: 16),
+            DateRangePicker(
+              firstDate: DateTime(2000),
+              lastDate: DateTime.now(),
+              onDateChanged: (dateRange) =>
+                  setState(() => selectedDateRange = dateRange),
+            ),
+            const SizedBox(height: 16),
+            if (selectedCarId != null && selectedDateRange != null)
+              _buildFilteredResults(
+                transactions,
+                // car1,
+                selectedCarId!,
+                selectedDateRange!,
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildFilteredResults(List<Transactions> transactions,
+      String BKS, DateTimeRange dateRange) {
+    final filteredTransactions = transactions.where((t) {
+      return t.car.BKS == BKS &&
+          t.shippingOrder.car.BKS == BKS &&
+          t.date.isAfter(dateRange.start) &&
+          t.date.isBefore(dateRange.end);
+      // t.bills == bills;
+    }).toList();
+
+    final income = filteredTransactions
+        .where((t) => t.bills == 'thu')
+        .map((transaction) => transaction.amount.toDouble())
+        .fold<double>(0, (previousValue, element) => previousValue + element);
+    final expense = filteredTransactions
+        .where((t) => t.bills == 'chi')
+        .map((transaction) => transaction.amount.toDouble())
+        .fold<double>(0, (previousValue, element) => previousValue + element);
+
+    return Column(
+      children: [
+        Text('Tổng thu: $income'),
+        Text('Tổng chi: $expense'),
+      ],
+    );
   }
 
   @override
@@ -40,15 +168,18 @@ class _TransactionScreenState extends State<TransactionScreen> {
           "Giao dịch",
           style: TextStyle(color: Colors.white),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.filter_alt_outlined, color: Colors.white),
+            onPressed: () {
+              // do something
+              _showFilterDialog(context);
+            },
+          )
+        ],
       ),
       body: Column(
         children: [
-          // ElevatedButton(
-          //   onPressed: () {
-          //     _countTransactionsByVehicle(context);
-          //   },
-          //   child: const Text('Count by Vehicle'),
-          // ),
           SingleChildScrollView(
             child: SizedBox(
               height: MediaQuery.sizeOf(context).height * 0.80,
@@ -149,6 +280,13 @@ class _TransactionScreenState extends State<TransactionScreen> {
                           ),
                         ),
                         const SizedBox(height: 15),
+                        // TextButton(
+                        //   child: const Icon(Icons.filter_alt,color: Colors.black),
+                        //   onPressed: (){
+                        //     _showFilterDialog(context);
+                        //   },
+                        // ),
+                        // const SizedBox(height: 15),
                         Expanded(
                           child: ListView.builder(
                               itemCount: state.transaction.length,
@@ -188,7 +326,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                     Column(
                                                       children: [
                                                         Text(
-                                                          'Tên lệnh',
+                                                          'Lệnh',
                                                           style: TextStyle(
                                                             fontSize: 14,
                                                             color: Theme.of(
@@ -220,7 +358,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                     Column(
                                                       children: [
                                                         Text(
-                                                          'Tên khách hàng',
+                                                          'Khách hàng',
                                                           style: TextStyle(
                                                             fontSize: 14,
                                                             color: Theme.of(
@@ -259,7 +397,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                         Column(
                                                           children: [
                                                             Text(
-                                                              'Tên dịch vụ',
+                                                              'Dịch vụ',
                                                               style: TextStyle(
                                                                 fontSize: 14,
                                                                 color: Theme.of(
@@ -295,7 +433,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                         Column(
                                                           children: [
                                                             Text(
-                                                              "Tên xe",
+                                                              "Xe",
                                                               style: TextStyle(
                                                                 fontSize: 14,
                                                                 color: Theme.of(

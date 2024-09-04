@@ -358,7 +358,7 @@ class _MainScreenState extends State<MainScreen> {
                                             Column(
                                               children: [
                                                 Text(
-                                                  'Tên lệnh',
+                                                  'Lệnh',
                                                   style: TextStyle(
                                                     fontSize: 14,
                                                     color: Theme.of(context)
@@ -416,7 +416,7 @@ class _MainScreenState extends State<MainScreen> {
                                                 Column(
                                                   children: [
                                                     Text(
-                                                      'Tên dịch vụ',
+                                                      'Dịch vụ',
                                                       style: TextStyle(
                                                         fontSize: 14,
                                                         color: Theme.of(context)
@@ -442,7 +442,7 @@ class _MainScreenState extends State<MainScreen> {
                                                 const SizedBox(width: 12),
                                                 Column(
                                                   children: [
-                                                    Text('Tên xe',
+                                                    Text('Xe',
                                                         style: TextStyle(
                                                           fontSize: 14,
                                                           color:

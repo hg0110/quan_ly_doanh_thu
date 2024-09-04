@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:core';
 
 import 'package:collection/collection.dart';
@@ -15,6 +16,10 @@ class Chart extends StatefulWidget {
 }
 
 class _ChartState extends State<Chart> {
+  late DateTime _currentWeekStart = _getStartOfWeek(DateTime.now());
+
+
+
   Map<int, double> _calculateProfitByMonth(List<Transactions> transactions) {
     Map<int, double> profitByMonth = {};
     for (int month = 1; month <= 12; month++) {
@@ -49,7 +54,9 @@ class _ChartState extends State<Chart> {
       profitByDayOfWeek[day] = 0;
     }
 
-    for (var transaction in widget.transactions) {
+    for (var transaction in widget.transactions.where((t) =>
+    t.date.isAfter(_currentWeekStart) &&
+        t.date.isBefore(_currentWeekStart.add(const Duration(days: 7))))) {
       int dayOfWeek = transaction.date.weekday - 1;
       double amount = transaction.amount.toDouble();
 
@@ -66,6 +73,24 @@ class _ChartState extends State<Chart> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    Timer.periodic(const Duration(days: 7), (timer) {
+      _updateCurrentWeek();
+    });
+  }
+
+  void _updateCurrentWeek() {
+    setState(() {
+      _currentWeekStart = _getStartOfWeek(DateTime.now());
+    });
+  }
+
+  DateTime _getStartOfWeek(DateTime date) {
+    return date.subtract(Duration(days: date.weekday - 1));
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (widget.period == 'week') {
       return _buildChart(
@@ -79,7 +104,7 @@ class _ChartState extends State<Chart> {
     return Column(
       children: [
         SizedBox(
-          height: 400,
+          height: 450,
           child: BarChart(
             BarChartData(
               alignment: BarChartAlignment.spaceAround,
@@ -115,25 +140,25 @@ class _ChartState extends State<Chart> {
             ),
           ),
         ),
-        const SizedBox(height: 20),
-        if (period == 'month')
-          FittedBox(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 30),
-              child: Column(
-                children: [
-                  _buildStatisticItem(
-                      'Tổng Thu: ', _calculateTotalRevenue(), Colors.green),
-                  const SizedBox(width: 12),
-                  _buildStatisticItem(
-                      'Tổng Chi: ', _calculateTotalExpenses(), Colors.red),
-                  const SizedBox(width: 12),
-                  _buildStatisticItem(
-                      'Lợi Nhuận: ', _calculateProfit(), Colors.blue),
-                ],
-              ),
-            ),
-          ),
+        // const SizedBox(height: 20),
+        // if (period == 'month')
+        //   FittedBox(
+        //     child: Padding(
+        //       padding: const EdgeInsets.only(top: 10, bottom: 30),
+        //       child: Column(
+        //         children: [
+        //           _buildStatisticItem(
+        //               'Tổng Thu: ', _calculateTotalRevenue(), Colors.green),
+        //           const SizedBox(width: 12),
+        //           _buildStatisticItem(
+        //               'Tổng Chi: ', _calculateTotalExpenses(), Colors.red),
+        //           const SizedBox(width: 12),
+        //           _buildStatisticItem(
+        //               'Lợi Nhuận: ', _calculateProfit(), Colors.blue),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
       ],
     );
   }
