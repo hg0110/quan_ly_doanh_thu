@@ -112,6 +112,24 @@ class FirebaseShippingOrderRepo implements ShippingOrderRepository {
 		}
 	}
 
+
+	@override
+	Future<ShippingOrder?> deleteShippingOrder(String ShippingId) async{
+		try {
+			final doc = await shippingOrderCollection.doc(ShippingId).get();
+			if (doc.exists) {
+				final shippingOrder = ShippingOrder.fromEntity(ShippingOrderEntity.fromDocument(doc.data()!));
+				await doc.reference.delete();
+				return shippingOrder;
+			} else {
+				return null; // Driver not found
+			}
+		} catch (e) {
+			log(e.toString());
+			return null; // Deletion failed
+		}
+	}
+
 	@override
 	Future<List<ShippingOrder>> getShippingOrder() async {
 		try {

@@ -91,7 +91,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   // Change cars to filteredCars
                   return DropdownMenuItem(
                     value: car,
-                    child: Text(car),
+                    child: Row(
+                      children: [
+                        Text(car),
+                      ],
+                    ),
                   );
                 }).toList(),
                 onChanged: (BKS) => setState(() => selectedCarId = BKS),
@@ -154,8 +158,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
     return Column(
       children: [
-        Text('Tổng thu: $income'),
-        Text('Tổng chi: $expense'),
+        Text('Tổng thu: $income',style: const TextStyle(
+            fontSize: 18,
+            color: Colors.green,
+            fontWeight: FontWeight.bold),),
+        Text('Tổng chi: $expense',style: const TextStyle(
+            fontSize: 18,
+            color: Colors.red,
+            fontWeight: FontWeight.bold),),
       ],
     );
   }

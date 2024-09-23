@@ -135,7 +135,13 @@ class _AddShippingOrderState extends State<AddShippingOrder> {
                                     .map((car) {
                                   return DropdownMenuItem<Car>(
                                     value: car,
-                                    child: Text(car.BKS),
+                                    child: Row(
+                                       children: [
+                                        Text(car.BKS),
+                                        const SizedBox(width: 20,),
+                                        Text(car.name),
+                                      ],
+                                    ),
                                   );
                                 }).toList(),
                                 onChanged: (Car? newValue1) {

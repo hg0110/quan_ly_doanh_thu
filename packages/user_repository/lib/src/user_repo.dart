@@ -16,6 +16,8 @@ abstract class UserRepository {
 
 	Future<List<MyUser>> getUser();
 
+	Future<List<MyUser>> searchUserByEmail(String email);
+
 	Future<MyUser> getMyUser(String myUserId);
 
 	Future<MyUser?> getUserByEmail(String email);

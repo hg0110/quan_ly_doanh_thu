@@ -8,3 +8,7 @@ sealed class GetUserEvent extends Equatable {
 }
 
 class GetUser extends GetUserEvent {}
+class SearchUser extends GetUserEvent {
+  final String email;
+  const SearchUser(this.email);
+}

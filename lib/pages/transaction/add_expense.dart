@@ -191,7 +191,13 @@ class _AddTransactionState extends State<AddTransaction> {
                                 items: state1.car.map((car) {
                                   return DropdownMenuItem<Car>(
                                     value: car,
-                                    child: Text(car.BKS),
+                                    child: Row(
+                                      children: [
+                                        Text(car.BKS),
+                                        const SizedBox(width: 20),
+                                        Text(car.name),
+                                      ],
+                                    ),
                                   );
                                 }).toList(),
                                 onChanged: (Car? newValue) {

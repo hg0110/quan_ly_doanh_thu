@@ -3,9 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'get_user_event.dart';
-
 part 'get_user_state.dart';
-
 class GetUserBloc extends Bloc<GetUserEvent, GetUserState> {
   UserRepository userRepository;
 
@@ -15,6 +13,20 @@ class GetUserBloc extends Bloc<GetUserEvent, GetUserState> {
       try {
         List<MyUser> user = await userRepository.getUser();
         emit(GetUserSuccess(user));
+      } catch (e) {
+        emit(GetUserFailure());
+      }
+    });
+
+    on<SearchUser>((event, emit) async {
+      emit(GetUserLoading());
+      try {
+        final users = await userRepository.searchUserByEmail(event.email);
+        if (users.isNotEmpty) {
+          emit(GetUserSuccess(users));
+        } else {
+          emit(GetUserNotFound());
+        }
       } catch (e) {
         emit(GetUserFailure());
       }

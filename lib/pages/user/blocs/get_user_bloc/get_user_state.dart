@@ -11,6 +11,7 @@ final class GetUserInitial extends GetUserState {}
 
 final class GetUserFailure extends GetUserState {}
 final class GetUserLoading extends GetUserState {}
+final class GetUserNotFound extends GetUserState {}
 final class GetUserSuccess extends GetUserState {
   final List<MyUser> user;
 

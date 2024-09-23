@@ -135,6 +135,24 @@ class FirebaseUserRepo implements UserRepository {
   }
 
   @override
+  Future<List<MyUser>> searchUserByEmail(String email) async {
+    try {
+      final querySnapshot =
+      await usersCollection.where('email', isEqualTo: email).get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs
+            .map((e) => MyUser.fromEntity(MyUserEntity.fromDocument(e.data())))
+            .toList();
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print('Error searching user by email: $e');
+      return [];
+    }
+  }
+
+  @override
   Future<void> updateUser(MyUser user) async {
     try {
       await usersCollection

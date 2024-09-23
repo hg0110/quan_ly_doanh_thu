@@ -14,6 +14,7 @@ import 'package:quan_ly_doanh_thu/pages/home/home_screen.dart';
 import 'package:quan_ly_doanh_thu/pages/service/blocs/create_category_bloc/create_category_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/service/blocs/get_categories_bloc/get_categories_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/shipping_order/blocs/create_shipping_order_bloc/create_shipping_order_bloc.dart';
+import 'package:quan_ly_doanh_thu/pages/shipping_order/blocs/delete_shipping_order_bloc/delete_shipping_order_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/transaction/blocs/create_transaction_bloc/create_transaction_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/transaction/blocs/get_transaction_bloc/get_Transaction_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/user/blocs/delete_user_bloc/delete_user_bloc.dart';
@@ -25,7 +26,6 @@ import 'package:user_repository/user_repository.dart';
 
 import 'blocs/authentication_bloc/authentication_bloc.dart';
 import 'blocs/my_user_bloc/my_user_bloc.dart';
-import 'blocs/update_user_info_bloc/update_user_info_bloc.dart';
 
 class MyAppView extends StatelessWidget {
   const MyAppView({super.key});
@@ -44,30 +44,35 @@ class MyAppView extends StatelessWidget {
                   CreateCustomerBloc(FirebaseTransactionRepo())),
           BlocProvider(
             create: (context) =>
-                GetCustomerBloc(FirebaseTransactionRepo())..add(GetCustomer()),
+            GetCustomerBloc(FirebaseTransactionRepo())
+              ..add(GetCustomer()),
           ),
           BlocProvider(
-            create: (context) => DeleteCustomerBloc(
-                transactionRepository: FirebaseTransactionRepo()),
+            create: (context) =>
+                DeleteCustomerBloc(
+                    transactionRepository: FirebaseTransactionRepo()),
           ),
 
           //
           BlocProvider<CreateCarBloc>(
               create: (context) => CreateCarBloc(FirebaseShippingOrderRepo())),
           BlocProvider(
-            create: (context) => DeleteCarBloc(
-                shippingOrderRepository: FirebaseShippingOrderRepo()),
+            create: (context) =>
+                DeleteCarBloc(
+                    shippingOrderRepository: FirebaseShippingOrderRepo()),
           ),
           BlocProvider(
             create: (context) =>
-                GetCarBloc(FirebaseShippingOrderRepo())..add(GetCar()),
+            GetCarBloc(FirebaseShippingOrderRepo())
+              ..add(GetCar()),
           ),
           //
           BlocProvider<CreateDriverBloc>(
               create: (context) => CreateDriverBloc(FirebaseDriverRepo())),
           BlocProvider(
             create: (context) =>
-                GetDriverBloc(FirebaseDriverRepo())..add(GetDriver()),
+            GetDriverBloc(FirebaseDriverRepo())
+              ..add(GetDriver()),
           ),
           BlocProvider(
             create: (context) =>
@@ -78,8 +83,13 @@ class MyAppView extends StatelessWidget {
               create: (context) =>
                   CreateShippingOrderBloc(FirebaseShippingOrderRepo())),
           BlocProvider(
+              create: (context) =>
+                  DeleteShippingOrderBloc(shippingOrderRepository: FirebaseShippingOrderRepo())
+          ),
+          BlocProvider(
             create: (context) =>
-                GetUserBloc(FirebaseUserRepo())..add(GetUser()),
+            GetUserBloc(FirebaseUserRepo())
+              ..add(GetUser()),
           ),
           BlocProvider(
             create: (context) =>
@@ -110,29 +120,38 @@ class MyAppView extends StatelessWidget {
             ),
             home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
                 builder: (context, state) {
-              if (state.status == AuthenticationStatus.authenticated) {
-                return MultiBlocProvider(
-                  providers: [
-                    BlocProvider(
-                      create: (context) =>
+                  if (state.status == AuthenticationStatus.authenticated) {
+                    return MultiBlocProvider(
+                      providers: [
+                        BlocProvider(
+                          create: (context) =>
                           GetTransactionBloc(FirebaseTransactionRepo())
                             ..add(GetTransaction()),
-                    ),
-                    BlocProvider<CreateTransactionBloc>(
-                        create: (context) => CreateTransactionBloc(FirebaseTransactionRepo())),
-                    BlocProvider(
-                      create: (context) => MyUserBloc(
-                          myUserRepository: context.read<AuthenticationBloc>().userRepository
-                      )..add(GetMyUser(
-                          myUserId: context.read<AuthenticationBloc>().state.user!.uid
-                      )),
-                    ),
-                  ],
-                  child: const HomeScreen(),
-                );
-              } else {
-                return const WelcomeScreen();
-              }
-            })));
+                        ),
+                        BlocProvider<CreateTransactionBloc>(
+                            create: (context) => CreateTransactionBloc(
+                                FirebaseTransactionRepo())),
+                        BlocProvider(
+                          create: (context) =>
+                          MyUserBloc(
+                              myUserRepository: context
+                                  .read<AuthenticationBloc>()
+                                  .userRepository
+                          )
+                            ..add(GetMyUser(
+                                myUserId: context
+                                    .read<AuthenticationBloc>()
+                                    .state
+                                    .user!
+                                    .uid
+                            )),
+                        ),
+                      ],
+                      child: const HomeScreen(),
+                    );
+                  } else {
+                    return const WelcomeScreen();
+                  }
+                })));
   }
 }

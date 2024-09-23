@@ -16,6 +16,8 @@ abstract class ShippingOrderRepository {
 
 	Future<void> updateShippingOrder(ShippingOrder shippingOrder);
 
+	Future<void> deleteShippingOrder(String ShippingId);
+
 	Future<List<ShippingOrder>> getShippingOrder();
 
 	Future<ShippingOrder?> getShippingOrderByName(String name);

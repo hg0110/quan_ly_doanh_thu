@@ -26,6 +26,72 @@ class _UserScreenState extends State<UserScreen> {
     super.initState();
   }
 
+  void _showFilterDialog(BuildContext context) {
+    String? _searchTerm;
+
+    showDialog(
+      context: context,
+      builder: (context) => BlocListener<GetUserBloc, GetUserState>(
+        listener: (context, state) {
+          if (state is GetUserSuccess && state.user.isNotEmpty) {
+            _showResultDialog(context, state.user.first);
+          }else if(state is GetUserNotFound){
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Không tìm thấy Nhân viên')),
+            );
+          }
+        },
+        child: AlertDialog(
+          title: const Text('Tìm kiếm thông tin nhân viên'),
+          content: TextField(
+            onChanged: (text) => _searchTerm = text,
+            decoration: const InputDecoration(hintText: 'Nhập email nhân viên'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Đóng'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (_searchTerm != null && _searchTerm!.isNotEmpty) {
+                  context.read<GetUserBloc>().add(SearchUser(_searchTerm!));
+                }
+              },
+              child: const Text('Tìm kiếm'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showResultDialog(BuildContext context, MyUser employee) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Thông tin nhân viên'),
+        content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+        Text('Họ tên: ${employee.name}'),
+        Text('Email: ${employee.email}'),
+        Text('Quyền: ${employee.roles}'),
+        // Hiển thị thêm thông tin khác nếu cần
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Đóng'),
+        ),
+      ],
+    ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
@@ -34,13 +100,13 @@ class _UserScreenState extends State<UserScreen> {
             listener: (context, state) {
               if (state is SignUpSuccess) {
                 context.read<GetUserBloc>().add(GetUser());
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Thêm Nhân viên thành công!')));
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('Thêm Nhân viên thành công!')));
               } else if (state is SignUpProcess) {
                 setState(() {
                   isLoading = true;
                 });
-              }else if (state is SignUpFailure) {
+              } else if (state is SignUpFailure) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Không thể thêm Nhân viên')),
                 );
@@ -74,6 +140,15 @@ class _UserScreenState extends State<UserScreen> {
               "NHÂN VIÊN",
               style: TextStyle(color: Colors.white),
             ),
+            actions: <Widget>[
+              IconButton(
+                icon: const Icon(Icons.search, color: Colors.white),
+                onPressed: () {
+                  // do something
+                  _showFilterDialog(context);
+                },
+              )
+            ],
           ),
           body: BlocBuilder<GetUserBloc, GetUserState>(
             builder: (context, state) {
@@ -81,91 +156,115 @@ class _UserScreenState extends State<UserScreen> {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
-              }
-              if (state is GetUserSuccess) {
+              } else if (state is GetUserSuccess) {
                 state.user.sort((a, b) => b.date.compareTo(a.date));
-                return ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemCount: state.user.length,
-                  itemBuilder: (context, index) {
-                    final user = state.user[index];
-                    return Dismissible(
-                      key: Key(user.userId),
-                      confirmDismiss: (direction) async {
-                        // Use confirmDismiss
-                        return await _showDeleteConfirmationDialog(
-                            context, user);
-                      },
-                      onDismissed: (direction) {
-                        context
-                            .read<DeleteUserBloc>()
-                            .add(DeleteUser(user.userId));
-                      },
-                      background: Container(
-                        color: Colors.red,
-                        alignment: Alignment.centerRight,
-                        padding: const EdgeInsets.only(right: 16.0),
-                        child: const Icon(Icons.delete, color: Colors.white),
-                      ),
-                      child: Card(
-                        surfaceTintColor: Colors.green,
-                        shadowColor: Colors.green,
-                        child: ListTile(
-                          title: SizedBox(
-                            width: double.infinity,
-                            child: Row(
-                              children: [
-                                const Text("Họ tên: "),
-                                Flexible(
-                                    child: Text(
-                                  user.name,
-                                  overflow: TextOverflow.ellipsis,
-                                )),
-                              ],
-                            ),
-                          ),
-                          subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    const Text("Emai: "),
-                                    Flexible(
-                                        child: Text(
-                                      user.email,
-                                      overflow: TextOverflow.ellipsis,
-                                    )),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    const Text("Quyền: "),
-                                    Text(user.roles),
-                                  ],
-                                ),
-                              ]),
-                          trailing: Column(
-                            children: [
-                              Expanded(
-                                child: SizedBox(
-                                  width: 30,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.edit),
-                                    onPressed: () async {
-                                      await UpdateUserScreen(context, user);
-                                      context
-                                          .read<GetUserBloc>()
-                                          .add(GetUser());
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                return Column(
+                  children: [
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Tổng số nhân viên: ${state.user.length}',
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                       ),
-                    );
-                  },
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: state.user.length,
+                        itemBuilder: (context, index) {
+                          final user = state.user[index];
+                          return Dismissible(
+                            key: Key(user.userId),
+                            confirmDismiss: (direction) async {
+                              // Use confirmDismiss
+                              return await _showDeleteConfirmationDialog(
+                                  context, user);
+                            },
+                            onDismissed: (direction) {
+                              context
+                                  .read<DeleteUserBloc>()
+                                  .add(DeleteUser(user.userId));
+                            },
+                            background: Container(
+                              color: Colors.red,
+                              alignment: Alignment.centerRight,
+                              padding: const EdgeInsets.only(right: 16.0),
+                              child:
+                                  const Icon(Icons.delete, color: Colors.white),
+                            ),
+                            child: Card(
+                              surfaceTintColor: Colors.green,
+                              shadowColor: Colors.green,
+                              child: ListTile(
+                                title: SizedBox(
+                                  width: double.infinity,
+                                  child: Row(
+                                    children: [
+                                      const Text("Họ tên: "),
+                                      Flexible(
+                                          child: Text(
+                                        user.name,
+                                        overflow: TextOverflow.ellipsis,
+                                      )),
+                                    ],
+                                  ),
+                                ),
+                                subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          const Text("Emai: "),
+                                          Flexible(
+                                              child: Text(
+                                            user.email,
+                                            overflow: TextOverflow.ellipsis,
+                                          )),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          const Text("Quyền: "),
+                                          Text(user.roles),
+                                        ],
+                                      ),
+                                      // Row(
+                                      //   children: [
+                                      //     const Text("ID: "),
+                                      //     Text(user.userId),
+                                      //   ],
+                                      // ),
+                                    ]),
+                                trailing: Column(
+                                  children: [
+                                    Expanded(
+                                      child: SizedBox(
+                                        width: 30,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.edit),
+                                          onPressed: () async {
+                                            await UpdateUserScreen(
+                                                context, user);
+                                            context
+                                                .read<GetUserBloc>()
+                                                .add(GetUser());
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 );
               } else {
                 return const Center(

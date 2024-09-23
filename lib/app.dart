@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/car/blocs/get_car_bloc/get_car_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/transaction/blocs/get_transaction_bloc/get_Transaction_bloc.dart';
+import 'package:quan_ly_doanh_thu/pages/user/blocs/get_user_bloc/get_user_bloc.dart';
 import 'package:quan_ly_doanh_thu/pages/welcome_screen.dart';
 import 'package:shipping_order_repository/shipping_order_repository.dart';
 import 'package:transaction_repository/transaction_repository.dart';
@@ -28,6 +29,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => GetCarBloc(FirebaseShippingOrderRepo())
             ..add(GetCar()),
+        ),
+        BlocProvider(
+          create: (context) => GetUserBloc(FirebaseUserRepo())
+            ..add(GetUser()),
         ),
       ],
       child: MaterialApp(
